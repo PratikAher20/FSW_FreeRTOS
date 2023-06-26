@@ -1,0 +1,7 @@
+################################################################################
+# Automatically-generated file. Do not edit!
+################################################################################
+
+USER_OBJS := C:/Users/S-SPACE/Desktop/Pratik/FreeRTOS/FreeRTOSv9.0.0/FreeRTOS_SmartFusion2_Demo/FreeRTOS/Demo/CORTEX_SmartFusion2_M2S050_SoftConsole/RTOSDemo_Hardware_Platform/Debug/CMSIS/startup_gcc/startup_m2sxxx.o C:/Users/S-SPACE/Desktop/Pratik/FreeRTOS/FreeRTOSv9.0.0/FreeRTOS_SmartFusion2_Demo/FreeRTOS/Demo/CORTEX_SmartFusion2_M2S050_SoftConsole/RTOSDemo_Hardware_Platform/Debug/CMSIS/startup_gcc/newlib_stubs.o
+
+LIBS := -lRTOSDemo_Hardware_Platform
