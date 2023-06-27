@@ -30,6 +30,7 @@ BaseType_t feed_get_hk_data;
 BaseType_t feed_get_payload_data;
 BaseType_t feed_tlm_task;
 BaseType_t feed_tlm_sender;
+BaseType_t feed_cmd_tsk;
 
 SemaphoreHandle_t xMutex;
 
@@ -45,6 +46,7 @@ TaskHandle_t tlm_tsk_handle;
 TaskHandle_t tlm_sender_handle;
 TaskHandle_t get_pld_pkt_handle;
 TaskHandle_t get_hk_pkt_handle;
+TaskHandle_t cmd_tsk;
 
 TimerHandle_t pkt_timer[NUM_PKTS];
 
@@ -357,23 +359,23 @@ void write_DAC_tasks(void* nu){
 //
 //}
 
-void vProcessInterface(void* f_param, uint32_t s_param){
-
-	command_cnt++;
-	uint8_t* irq_buffer;
-	irq_buffer = (uint8_t *) f_param;
-	 if(irq_buffer[0] == 127){
-			c[command_index] = '\0';
-			c[command_index - 1] = 127;
-			MSS_UART_polled_tx(&g_mss_uart0, &c[command_index - 1], 1);
-			command_index = command_index - 1;
-		}
-		else{
-			c[command_index] =  irq_buffer[0];
-			MSS_UART_polled_tx(&g_mss_uart0, &c[command_index], 1);
-			command_index = command_index + 1;
-		}
-}
+//void vProcessInterface(void* f_param, uint32_t s_param){
+//
+//	command_cnt++;
+//	uint8_t* irq_buffer;
+//	irq_buffer = (uint8_t *) f_param;
+//	 if(irq_buffer[0] == 127){
+//			c[command_index] = '\0';
+//			c[command_index - 1] = 127;
+//			MSS_UART_polled_tx(&g_mss_uart0, &c[command_index - 1], 1);
+//			command_index = command_index - 1;
+//		}
+//		else{
+//			c[command_index] =  irq_buffer[0];
+//			MSS_UART_polled_tx(&g_mss_uart0, &c[command_index], 1);
+//			command_index = command_index + 1;
+//		}
+//}
 
 void uart0_rx_handler(mss_uart_instance_t * this_uart){
 
@@ -392,9 +394,12 @@ void uart0_rx_handler(mss_uart_instance_t * this_uart){
 //	        command_index = command_index + 1;
 //	    }
 	 xHigherPriorityTaskWoken = pdFALSE;
+
 //	 xTimerPendFunctionCallFromISR(vProcessInterface, (void*) uart0_irq_rx_buffer, NULL, &xHigherPriorityTaskWoken);
-	xTimerResetFromISR()
-	 portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+//	 if(xHigherPriorityTaskWoken){
+//		 portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+//	 }
+	vTaskNotifyGiveFromISR(cmd_tsk, xHigherPriorityTaskWoken);
 //	BaseType_t checkIfYieldRequired;
 //	checkIfYieldRequired = xTaskResumeFromISR(uart_irq_function);
 //	portYIELD_FROM_ISR(checkIfYieldRequired);
@@ -470,6 +475,9 @@ void demo_tasks(void){
 //		I2C_write(VC_SENSOR_I2C, DAC_ADDR, REF_DATA, 2, I2C_RELEASE_BUS);
 //		status = I2C_wait_complete(VC_SENSOR_I2C, I2C_NO_TIMEOUT);
 
+		NVIC_EnableIRQ(UART0_IRQn);
+		NVIC_SetPriority(UART0_IRQn, configMAX_SYSCALL_INTERRUPT_PRIORITY);
+
 		MSS_UART_init(&g_mss_uart0, 9600, MSS_UART_DATA_8_BITS | MSS_UART_NO_PARITY | MSS_UART_ONE_STOP_BIT);
 		MSS_UART_set_rx_handler(&g_mss_uart0, uart0_rx_handler, MSS_UART_ONE_STOP_BIT);
 
@@ -500,6 +508,8 @@ void demo_tasks(void){
 		feed_get_hk_data = xTaskCreate(get_hk_data, "HK", configMINIMAL_STACK_SIZE, (void*)data , 2, &get_hk_pkt_handle);
 
 		feed_get_payload_data = xTaskCreate(get_pld_data, "Payload", configMINIMAL_STACK_SIZE, (void* )data, 1, &get_pld_pkt_handle);
+
+//		feed_cmd_tsk = xTaskCreate(pro_cmd_tsk, "Command", configMINIMAL_STACK_SIZE, NULL, 2, &cmd_tsk);
 
 		pkt_timer[0] = xTimerCreate("TLM_Task_Timer", pdMS_TO_TICKS(5000),pdTRUE, (void* )0, vtlm_task);
 		xTimerStart(pkt_timer[0], 0);

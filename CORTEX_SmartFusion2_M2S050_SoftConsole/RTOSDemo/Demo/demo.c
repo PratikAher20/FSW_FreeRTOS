@@ -106,6 +106,7 @@ void vhk_callback(void* d){
 			loss_count+= flag;
 
 			data[511] = HK_API_ID;
+
 //			xTaskNotifyGive(tlm_tsk_handle);
 
 //		}
@@ -281,11 +282,11 @@ void write_DAC(void* nu){
 
 	uint8_t REF[3] = {0x38, 0x00, 0x05};
 //	uint8_t REF_DATA[2] = {0x00, 0x05};
-	uint8_t PWR[3] = {0x20, 0x00, 0x01};
+	uint8_t PWR[3] = {0x20, 0x00, 0x11};
 //	uint8_t PWR = 0x20;
 //	uint8_t PWR_DATA[2] = {0x00, 0x11};
 //	uint8_t DAC_A[3] = {0x18, 0x00, 0x00};
-	uint8_t DAC_A_cmd[3] = {0x14, 0xFF, 0xF0};
+	uint8_t DAC_A_cmd[3] = {0x19, 0xFF, 0xF0};
 //	uint8_t DAC_A_Data[2] = {0xFF, 0xF0};
 //	uint8_t DAC_B_cmd[1] = {0x19};
 //	uint8_t DAC_C_cmd[1] = {0x1A};
@@ -294,6 +295,7 @@ void write_DAC(void* nu){
 	uint8_t TD[1] = {0xAA};
 	uint8_t rx_buffer[2];
 	uint8_t tx[1] = {0xAB};
+
 	i2c_status_t status;
 //	I2C_write(VC_SENSOR_I2C, DAC_ADDR, REF, 3, I2C_RELEASE_BUS);
 //	status = I2C_wait_complete(VC_SENSOR_I2C, I2C_NO_TIMEOUT);
@@ -335,7 +337,6 @@ void write_DAC(void* nu){
 //void uart_irq_function(){
 //
 //	while(1){
-//		vTaskSuspend(NULL);
 //
 //		if(uart0_irq_rx_buffer[0] == 127){
 //				c[command_index] = '\0';
@@ -348,32 +349,69 @@ void write_DAC(void* nu){
 //				MSS_UART_polled_tx(&g_mss_uart0, &c[command_index], 1);
 //				command_index = command_index + 1;
 //			}
+//		vTaskSuspend(NULL);
 //	}
 //
 //}
+
+void irq_tsk_func(void* f_param){
+
+	uint32_t ulNotifiedValue;
+
+	while(1){
+		xTaskNotifyWait(0x00, 0, &ulNotifiedValue, portMAX_DELAY);
+		ulTaskNotifyTake(pdTRUE, 1);
+		command_cnt++;
+		uint8_t* irq_buffer;
+		irq_buffer = (uint8_t *) f_param;
+		 if(irq_buffer[0] == 127){
+				c[command_index] = '\0';
+				c[command_index - 1] = 127;
+				MSS_UART_polled_tx(&g_mss_uart0, &c[command_index - 1], 1);
+				command_index = command_index - 1;
+			}
+		else{
+			c[command_index] =  irq_buffer[0];
+			MSS_UART_polled_tx(&g_mss_uart0, &c[command_index], 1);
+			command_index = command_index + 1;
+		}
+	}
+}
 
 void uart0_rx_handler(mss_uart_instance_t * this_uart){
 
 
 	uart1_irq_size = MSS_UART_get_rx(this_uart, uart0_irq_rx_buffer,1);
-	command_cnt = 0;
-	 if(uart0_irq_rx_buffer[0] == 127){
-	        c[command_index] = '\0';
-	        c[command_index - 1] = 127;
-	        command_cnt = command_cnt + 1;
-	        MSS_UART_polled_tx(&g_mss_uart0, &c[command_index - 1], 1);
-	        command_index = command_index - 1;
-	    }
-	    else{
-	        c[command_index] =  uart0_irq_rx_buffer[0];
-	        command_cnt = command_cnt + 1;
-	        MSS_UART_polled_tx(&g_mss_uart0, &c[command_index], 1);
-	        command_index = command_index + 1;
-	    }
-//	BaseType_t checkIfYieldRequired;
-//	checkIfYieldRequired = xTaskResumeFromISR(uart_irq_function);
-//	portYIELD_FROM_ISR(checkIfYieldRequired);
-//	 xTaskNotifyFromISR(irq_pro, (uint32_t) c, eSetValueWithOverwrite, pdTRUE);
+//	command_cnt = 0;
+//	 if(uart0_irq_rx_buffer[0] == 127){
+//	        c[command_index] = '\0';
+//	        c[command_index - 1] = 127;
+//	        command_cnt = command_cnt + 1;
+//	        MSS_UART_polled_tx(&g_mss_uart0, &c[command_index - 1], 1);
+//	        command_index = command_index - 1;
+//	    }
+//	    else{
+//	        c[command_index] =  uart0_irq_rx_buffer[0];
+//	        command_cnt = command_cnt + 1;
+//	        MSS_UART_polled_tx(&g_mss_uart0, &c[command_index], 1);
+//	        command_index = command_index + 1;
+//	    }
+
+//	BaseType_t checkIfYieldRequired = pdFALSE;
+//	checkIfYieldRequired = xTaskResumeFromISR(&uart_irq);
+//	if(checkIfYieldRequired == pdTRUE){
+//		portYIELD_FROM_ISR(checkIfYieldRequired);
+//	}
+	BaseType_t xHigherPriorityTaskWoken;
+	 xHigherPriorityTaskWoken = pdFALSE;
+
+//	 xTimerPendFunctionCallFromISR(vProcessInterface, (void*) uart0_irq_rx_buffer, NULL, &xHigherPriorityTaskWoken);
+//	 xTimerStartFromISR(irq_timer, &xHigherPriorityTaskWoken);
+
+
+	vTaskNotifyGiveFromISR(uart_irq, &xHigherPriorityTaskWoken);
+
+	 portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
 
 }
 
@@ -438,6 +476,9 @@ void demo(void){
 		Data_HK_Queue = xQueueCreate(HK_QUEUE_LENGTH, SIZE_QUEUE);
 		Data_PLD_Queue = xQueueCreate(PLD_QUEUE_LENGTH, SIZE_PLD_QUEUE);
 
+		NVIC_EnableIRQ(UART0_IRQn);
+		NVIC_SetPriority(UART0_IRQn, configMAX_SYSCALL_INTERRUPT_PRIORITY - 1);
+
 		pkt_timer[0] = xTimerCreate("Hk_Timer", pdMS_TO_TICKS(2000), pdTRUE, (void* )0, vhk_callback);
 		xTimerStart(pkt_timer[0], 0);
 		pkt_timer[3] = xTimerCreate("PLD_Timer", pdMS_TO_TICKS(4000), pdTRUE, (void* )0, vpld_callback);
@@ -446,6 +487,7 @@ void demo(void){
 		xTimerStart(pkt_timer[1], 0);
 		pkt_timer[2] = xTimerCreate("Sender_Timer", pdMS_TO_TICKS(5015), pdTRUE, (void* )0, vtlm_sender);
 		xTimerStart(pkt_timer[2], 0);
+//		pkt_timer[4] = xTimerCreate("irq_timer", pdMS_TO_TICKS(100000), pdTRUE, (void* )0, irq_timer);
 
 
 //		pkt_timer[1] = xTimerCreate("PLD_Timer", pdMS_TO_TICKS(3000), pdTRUE, (void*)0, vpld_callback);
@@ -479,9 +521,12 @@ void demo(void){
 //		pkt_hk_t* hk_pkt;
 
 
+
 	 xMutex = xSemaphoreCreateMutex();
 
-//	 xTaskCreate(uart_irq_function, "uart_irq", configMINIMAL_STACK_SIZE, NULL, configMAX_SYSCALL_INTERRUPT_PRIORITY - 1, &uart_irq);
+	 xTaskCreate(irq_tsk_func, "uart_irq", configMINIMAL_STACK_SIZE, NULL, configMAX_SYSCALL_INTERRUPT_PRIORITY - 1, &uart_irq);
+
+
 //	 xTaskCreate(mss_DAC, "MSS", configMINIMAL_STACK_SIZE, NULL, 1, NULL);
 //	 xTaskCreate(write_DAC, "DAC", configMINIMAL_STACK_SIZE, NULL, 1, NULL);
 //	 xTaskCreate(get_imu_data, "IMU", configMINIMAL_STACK_SIZE, (void*) hk_pkt , 1, NULL);
