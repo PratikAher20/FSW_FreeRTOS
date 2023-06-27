@@ -283,10 +283,11 @@ void write_DAC(void* nu){
 	uint8_t REF[3] = {0x38, 0x00, 0x05};
 //	uint8_t REF_DATA[2] = {0x00, 0x05};
 	uint8_t PWR[3] = {0x20, 0x00, 0x11};
+	uint8_t config[3] = {0x30, 0x00, 0x02};
 //	uint8_t PWR = 0x20;
 //	uint8_t PWR_DATA[2] = {0x00, 0x11};
 //	uint8_t DAC_A[3] = {0x18, 0x00, 0x00};
-	uint8_t DAC_A_cmd[3] = {0x19, 0xFF, 0xF0};
+	uint8_t DAC_A_cmd[3] = {0x00, 0xFF, 0xF0};
 //	uint8_t DAC_A_Data[2] = {0xFF, 0xF0};
 //	uint8_t DAC_B_cmd[1] = {0x19};
 //	uint8_t DAC_C_cmd[1] = {0x1A};
@@ -313,6 +314,9 @@ void write_DAC(void* nu){
 //	status = I2C_wait_complete(VC_SENSOR_I2C, I2C_NO_TIMEOUT);
 
 	I2C_write(VC_SENSOR_I2C, DAC_ADDR, PWR, 3, I2C_RELEASE_BUS);
+	status = I2C_wait_complete(VC_SENSOR_I2C,I2C_NO_TIMEOUT);
+
+	I2C_write(VC_SENSOR_I2C, DAC_ADDR, config, 3, I2C_RELEASE_BUS);
 	status = I2C_wait_complete(VC_SENSOR_I2C,I2C_NO_TIMEOUT);
 
 	I2C_write(VC_SENSOR_I2C, DAC_ADDR, DAC_A_cmd, 3, I2C_RELEASE_BUS);
@@ -375,6 +379,7 @@ void irq_tsk_func(void* f_param){
 			MSS_UART_polled_tx(&g_mss_uart0, &c[command_index], 1);
 			command_index = command_index + 1;
 		}
+
 	}
 }
 

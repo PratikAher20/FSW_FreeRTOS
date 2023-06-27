@@ -1,0 +1,88 @@
+################################################################################
+# Automatically-generated file. Do not edit!
+################################################################################
+
+-include ../makefile.init
+
+RM := rm -rf
+
+# All of the sources participating in the build are defined here
+-include sources.mk
+-include subdir.mk
+-include pilot/subdir.mk
+-include osal/subdir.mk
+-include FreeRTOS-Source/subdir.mk
+-include FreeRTOS-Source/portable/MemMang/subdir.mk
+-include FreeRTOS-Source/portable/GCC/ARM_CM3/subdir.mk
+-include Demo/subdir.mk
+-include Blinky-Demo/subdir.mk
+-include objects.mk
+
+ifneq ($(MAKECMDGOALS),clean)
+ifneq ($(strip $(C_DEPS)),)
+-include $(C_DEPS)
+endif
+endif
+
+-include ../makefile.defs
+
+# Add inputs and outputs from these tool invocations to the build variables 
+MEMORYMAP += \
+memory-map.xml \
+
+IHEXFILES += \
+RTOSDemo.hex \
+
+SRECFILES += \
+RTOSDemo.srec \
+
+LISTINGS += \
+RTOSDemo.lst \
+
+
+# All Target
+all: RTOSDemo secondary-outputs
+
+# Tool invocations
+RTOSDemo: $(OBJS) $(USER_OBJS)
+	@echo 'Building target: $@'
+	@echo 'Invoking: GNU C Linker'
+	arm-none-eabi-gcc -mthumb -mcpu=cortex-m3 -L"C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug" -T../../RTOSDemo_Hardware_Platform/CMSIS/startup_gcc/debug-in-microsemi-smartfusion2-esram.ld -Wl,-Map=$(EXECUTABLE).map -Xlinker -gc-sections -o"RTOSDemo" $(OBJS) $(USER_OBJS) $(LIBS)
+	@echo 'Finished building target: $@'
+	@echo ' '
+
+memory-map.xml: $(EXECUTABLE)
+	@echo 'Invoking: Memory map generator'
+	actel-map -o "memory-map.xml" $(EXECUTABLE) $(BUILDCMD)
+	@echo 'Finished building: $@'
+	@echo ' '
+
+RTOSDemo.hex: $(EXECUTABLE)
+	@echo 'Invoking: GNU Intel Hex File Generator'
+	arm-none-eabi-objcopy -O ihex $(EXECUTABLE) "RTOSDemo.hex"
+	@echo 'Finished building: $@'
+	@echo ' '
+
+RTOSDemo.srec: $(EXECUTABLE)
+	@echo 'Invoking: GNU S-Record Generator'
+	arm-none-eabi-objcopy -O srec $(EXECUTABLE) "RTOSDemo.srec"
+	@echo 'Finished building: $@'
+	@echo ' '
+
+RTOSDemo.lst: $(EXECUTABLE)
+	@echo 'Invoking: GNU Listing Generator'
+	arm-none-eabi-objdump -h -S $(EXECUTABLE) > "RTOSDemo.lst"
+	@echo 'Finished building: $@'
+	@echo ' '
+
+# Other Targets
+clean::
+	-$(RM) $(MEMORYMAP)$(OBJS)$(C_DEPS)$(SRECFILES)$(IHEXFILES)$(LISTINGS)$(EXECUTABLE) RTOSDemo
+	-@echo ' '
+
+secondary-outputs: $(MEMORYMAP) $(IHEXFILES) $(SRECFILES) $(LISTINGS)
+
+.PHONY: all clean dependents
+.SECONDARY:
+
+-include ../makefile.targets

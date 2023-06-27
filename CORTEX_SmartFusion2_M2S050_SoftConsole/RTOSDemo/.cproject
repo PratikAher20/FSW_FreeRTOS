@@ -88,7 +88,7 @@
 </toolChain>
 </folderInfo>
 <sourceEntries>
-<entry excluding="Demo_Tasks" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+<entry excluding="Demo" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 </sourceEntries>
 </configuration>
 </storageModule>

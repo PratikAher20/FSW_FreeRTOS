@@ -127,9 +127,10 @@ int main( void )
 		//main_blinky();
 
 
-		demo();
+//		demo();
 
-//		demo_tasks();
+
+		demo_tasks();
 	}
 	#else
 
