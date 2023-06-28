@@ -1,0 +1,34 @@
+#include "cmd.h"
+#include "timers.h"
+
+// Function checking the CheckSUM
+//void chk_sum();
+
+bool cmd_valid(command_t* rx_cmd){
+	return 1;
+}
+
+bool chk_s_cmd(command_t* rx_cmd){
+
+	if( (rx_cmd->ccsds_cmd_p1 >> 11) & 0x01){
+		return 1;
+	}
+	else{
+		return 0;
+	}
+
+}
+
+void cmd_engine(command_t* rx_cmd){
+
+	if(chk_s_cmd(rx_cmd)){
+		pkt_timer[2] = xTimerCreate("cmd_timer", pdMS_TO_TICKS(rx_cmd->ccsds_time), pdFALSE, (void*)0, vcmd_callback);
+		xTimerStart(pkt_timer[2], 0);
+	}
+	else{
+		 //Send the command struct to detect APID
+		cmd_Apid_Map()
+	}
+
+}
+

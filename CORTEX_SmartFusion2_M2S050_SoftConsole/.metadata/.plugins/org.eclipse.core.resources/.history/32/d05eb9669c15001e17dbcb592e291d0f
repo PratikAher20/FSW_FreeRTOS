@@ -1,0 +1,28 @@
+#include "cmd.h"
+
+// Function checking the CheckSUM
+//void chk_sum();
+
+bool cmd_valid(command_t* rx_cmd){
+	return 1;
+}
+
+bool chk_s_cmd(command_t* rx_cmd){
+
+	if( (rx_cmd->ccsds_cmd_p1 >> 11) & 0x01){
+		return 1;
+	}
+	else{
+		return 0;
+	}
+
+}
+
+void cmd_engine(command_t* rx_cmd){
+
+	if(chk_s_cmd(rx_cmd)){
+		rx_cmd->ccsds_time;
+	}
+
+}
+

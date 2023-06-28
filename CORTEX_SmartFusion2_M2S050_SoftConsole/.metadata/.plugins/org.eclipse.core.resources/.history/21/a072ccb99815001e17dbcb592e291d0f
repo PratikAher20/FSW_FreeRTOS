@@ -1,0 +1,14 @@
+#include "cmd.h"
+
+// Function checking the CheckSUM
+//void chk_sum();
+
+bool cmd_valid(command_t* rx_cmd){
+
+}
+
+void cmd_engine(command_t* rx_cmd){
+
+
+}
+

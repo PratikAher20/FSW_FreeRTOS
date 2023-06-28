@@ -48,6 +48,7 @@ argu                0x19              ./main.o
 feed_cmd_tsk        0x4               ./Demo_Tasks/demo_tasks.o
 feed_tlm_sender     0x4               ./Demo_Tasks/demo_tasks.o
 g_core_i2c5         0x6c              ./pilot/peripherals.o
+cmd_timer           0x4               ./cmds/cmd.o
 init_command        0x2               ./pilot/get_data.o
 xMutex              0x4               ./Demo_Tasks/demo_tasks.o
 g_core_i2c3         0x6c              ./pilot/peripherals.o
@@ -71,10 +72,13 @@ device_param        0x100             ./main.o
 config_reg          0x1               ./pilot/get_data.o
 core_i2c_status     0x1               ./pilot/peripherals.o
 pld_pkt             0x4               ./Demo_Tasks/demo_tasks.o
+command_reject_cnt  0x2               ./Demo_Tasks/demo_tasks.o
 device              0x100             ./main.o
+cmd_list            0xe               ./cmds/cmd.o
 status              0x1               ./pilot/get_data.o
 cmd_tsk             0x4               ./Demo_Tasks/demo_tasks.o
 command_index       0x1               ./main.o
+cmd                 0x4               ./cmds/cmd.o
 g_core_i2c4         0x6c              ./pilot/peripherals.o
 
 Discarded input sections
@@ -141,6 +145,11 @@ Discarded input sections
  .bss           0x00000000        0x0 ./osal/osal.o
  .text.vTask_Delay
                 0x00000000       0x34 ./osal/osal.o
+ .text          0x00000000        0x0 ./cmds/cmd.o
+ .data          0x00000000        0x0 ./cmds/cmd.o
+ .bss           0x00000000        0x0 ./cmds/cmd.o
+ .text.set_pkt_rate
+                0x00000000       0x20 ./cmds/cmd.o
  .text          0x00000000        0x0 ./FreeRTOS-Source/list.o
  .data          0x00000000        0x0 ./FreeRTOS-Source/list.o
  .bss           0x00000000        0x0 ./FreeRTOS-Source/list.o
@@ -287,13 +296,13 @@ Discarded input sections
                 0x00000000       0xa4 ./Demo_Tasks/demo_tasks.o
  .text.write_DAC
                 0x00000000       0xbc ./Demo_Tasks/demo_tasks.o
- .rodata.C.122.6276
+ .rodata.C.124.6312
                 0x00000000        0x4 ./Demo_Tasks/demo_tasks.o
- .rodata.C.123.6277
+ .rodata.C.125.6313
                 0x00000000        0x4 ./Demo_Tasks/demo_tasks.o
- .rodata.C.124.6278
+ .rodata.C.126.6314
                 0x00000000        0x4 ./Demo_Tasks/demo_tasks.o
- .rodata.C.125.6279
+ .rodata.C.127.6315
                 0x00000000        0x4 ./Demo_Tasks/demo_tasks.o
  .text          0x00000000        0x0 ./Blinky-Demo/main_blinky.o
  .data          0x00000000        0x0 ./Blinky-Demo/main_blinky.o
@@ -529,6 +538,7 @@ LOAD ./pilot/pslv_interface.o
 LOAD ./pilot/read.o
 LOAD ./pilot/write.o
 LOAD ./osal/osal.o
+LOAD ./cmds/cmd.o
 LOAD ./FreeRTOS-Source/list.o
 LOAD ./FreeRTOS-Source/queue.o
 LOAD ./FreeRTOS-Source/tasks.o
@@ -561,7 +571,7 @@ END GROUP
                 0x20010000                PROVIDE (_estack, __main_stack_start)
                 0x00000000                PROVIDE (__mirrored_nvm, 0x0)
 
-.text           0x20000000     0x72f8
+.text           0x20000000     0x759c
  CREATE_OBJECT_SYMBOLS
                 0x20000000                __text_load = LOADADDR (.text)
                 0x20000000                __text_start = .
@@ -698,358 +708,375 @@ END GROUP
                 0x20000e58                get_ADC_value
  .text.init     0x20000ef8       0x9c ./pilot/init.o
                 0x20000ef8                init
+ .text.cmd_valid
+                0x20000f94       0x18 ./cmds/cmd.o
+                0x20000f94                cmd_valid
+ .text.chk_s_cmd
+                0x20000fac       0x98 ./cmds/cmd.o
+                0x20000fac                chk_s_cmd
+ .text.add_cmd  0x20001044       0xa8 ./cmds/cmd.o
+                0x20001044                add_cmd
+ .text.vcmd_callback
+                0x200010ec        0xc ./cmds/cmd.o
+                0x200010ec                vcmd_callback
+ .text.cmd_engine
+                0x200010f8      0x124 ./cmds/cmd.o
+                0x200010f8                cmd_engine
+ .text.cmd_noop
+                0x2000121c       0x1c ./cmds/cmd.o
+                0x2000121c                cmd_noop
  .text.vListInitialise
-                0x20000f94       0x48 ./FreeRTOS-Source/list.o
-                0x20000f94                vListInitialise
+                0x20001238       0x48 ./FreeRTOS-Source/list.o
+                0x20001238                vListInitialise
  .text.vListInitialiseItem
-                0x20000fdc       0x1c ./FreeRTOS-Source/list.o
-                0x20000fdc                vListInitialiseItem
+                0x20001280       0x1c ./FreeRTOS-Source/list.o
+                0x20001280                vListInitialiseItem
  .text.vListInsertEnd
-                0x20000ff8       0x48 ./FreeRTOS-Source/list.o
-                0x20000ff8                vListInsertEnd
+                0x2000129c       0x48 ./FreeRTOS-Source/list.o
+                0x2000129c                vListInsertEnd
  .text.vListInsert
-                0x20001040       0x74 ./FreeRTOS-Source/list.o
-                0x20001040                vListInsert
+                0x200012e4       0x74 ./FreeRTOS-Source/list.o
+                0x200012e4                vListInsert
  .text.uxListRemove
-                0x200010b4       0x58 ./FreeRTOS-Source/list.o
-                0x200010b4                uxListRemove
+                0x20001358       0x58 ./FreeRTOS-Source/list.o
+                0x20001358                uxListRemove
  .text.xQueueGenericReset
-                0x2000110c       0xec ./FreeRTOS-Source/queue.o
-                0x2000110c                xQueueGenericReset
+                0x200013b0       0xec ./FreeRTOS-Source/queue.o
+                0x200013b0                xQueueGenericReset
  .text.xQueueGenericCreate
-                0x200011f8       0x7c ./FreeRTOS-Source/queue.o
-                0x200011f8                xQueueGenericCreate
+                0x2000149c       0x7c ./FreeRTOS-Source/queue.o
+                0x2000149c                xQueueGenericCreate
  .text.prvInitialiseNewQueue
-                0x20001274       0x48 ./FreeRTOS-Source/queue.o
+                0x20001518       0x48 ./FreeRTOS-Source/queue.o
  .text.prvInitialiseMutex
-                0x200012bc       0x40 ./FreeRTOS-Source/queue.o
+                0x20001560       0x40 ./FreeRTOS-Source/queue.o
  .text.xQueueCreateMutex
-                0x200012fc       0x38 ./FreeRTOS-Source/queue.o
-                0x200012fc                xQueueCreateMutex
+                0x200015a0       0x38 ./FreeRTOS-Source/queue.o
+                0x200015a0                xQueueCreateMutex
  .text.xQueueGenericSend
-                0x20001334      0x230 ./FreeRTOS-Source/queue.o
-                0x20001334                xQueueGenericSend
+                0x200015d8      0x230 ./FreeRTOS-Source/queue.o
+                0x200015d8                xQueueGenericSend
  .text.xQueueGenericSendFromISR
-                0x20001564      0x144 ./FreeRTOS-Source/queue.o
-                0x20001564                xQueueGenericSendFromISR
+                0x20001808      0x144 ./FreeRTOS-Source/queue.o
+                0x20001808                xQueueGenericSendFromISR
  .text.xQueueGenericReceive
-                0x200016a8      0x268 ./FreeRTOS-Source/queue.o
-                0x200016a8                xQueueGenericReceive
+                0x2000194c      0x268 ./FreeRTOS-Source/queue.o
+                0x2000194c                xQueueGenericReceive
  .text.prvCopyDataToQueue
-                0x20001910       0xf0 ./FreeRTOS-Source/queue.o
+                0x20001bb4       0xf0 ./FreeRTOS-Source/queue.o
  .text.prvCopyDataFromQueue
-                0x20001a00       0x50 ./FreeRTOS-Source/queue.o
+                0x20001ca4       0x50 ./FreeRTOS-Source/queue.o
  .text.prvUnlockQueue
-                0x20001a50       0xac ./FreeRTOS-Source/queue.o
+                0x20001cf4       0xac ./FreeRTOS-Source/queue.o
  .text.prvIsQueueEmpty
-                0x20001afc       0x34 ./FreeRTOS-Source/queue.o
+                0x20001da0       0x34 ./FreeRTOS-Source/queue.o
  .text.prvIsQueueFull
-                0x20001b30       0x38 ./FreeRTOS-Source/queue.o
+                0x20001dd4       0x38 ./FreeRTOS-Source/queue.o
  .text.vQueueWaitForMessageRestricted
-                0x20001b68       0x74 ./FreeRTOS-Source/queue.o
-                0x20001b68                vQueueWaitForMessageRestricted
+                0x20001e0c       0x74 ./FreeRTOS-Source/queue.o
+                0x20001e0c                vQueueWaitForMessageRestricted
  .text.xTaskCreate
-                0x20001bdc       0x94 ./FreeRTOS-Source/tasks.o
-                0x20001bdc                xTaskCreate
+                0x20001e80       0x94 ./FreeRTOS-Source/tasks.o
+                0x20001e80                xTaskCreate
  .text.prvInitialiseNewTask
-                0x20001c70      0x12c ./FreeRTOS-Source/tasks.o
+                0x20001f14      0x12c ./FreeRTOS-Source/tasks.o
  .text.prvAddNewTaskToReadyList
-                0x20001d9c      0x13c ./FreeRTOS-Source/tasks.o
+                0x20002040      0x13c ./FreeRTOS-Source/tasks.o
  .text.uxTaskPriorityGet
-                0x20001ed8       0x38 ./FreeRTOS-Source/tasks.o
-                0x20001ed8                uxTaskPriorityGet
+                0x2000217c       0x38 ./FreeRTOS-Source/tasks.o
+                0x2000217c                uxTaskPriorityGet
  .text.vTaskPrioritySet
-                0x20001f10      0x1c0 ./FreeRTOS-Source/tasks.o
-                0x20001f10                vTaskPrioritySet
+                0x200021b4      0x1c0 ./FreeRTOS-Source/tasks.o
+                0x200021b4                vTaskPrioritySet
  .text.vTaskStartScheduler
-                0x200020d0       0xb4 ./FreeRTOS-Source/tasks.o
-                0x200020d0                vTaskStartScheduler
+                0x20002374       0xb4 ./FreeRTOS-Source/tasks.o
+                0x20002374                vTaskStartScheduler
  .text.vTaskSuspendAll
-                0x20002184       0x24 ./FreeRTOS-Source/tasks.o
-                0x20002184                vTaskSuspendAll
+                0x20002428       0x24 ./FreeRTOS-Source/tasks.o
+                0x20002428                vTaskSuspendAll
  .text.xTaskResumeAll
-                0x200021a8      0x1a0 ./FreeRTOS-Source/tasks.o
-                0x200021a8                xTaskResumeAll
+                0x2000244c      0x1a0 ./FreeRTOS-Source/tasks.o
+                0x2000244c                xTaskResumeAll
  .text.xTaskGetTickCount
-                0x20002348       0x20 ./FreeRTOS-Source/tasks.o
-                0x20002348                xTaskGetTickCount
+                0x200025ec       0x20 ./FreeRTOS-Source/tasks.o
+                0x200025ec                xTaskGetTickCount
  .text.xTaskIncrementTick
-                0x20002368      0x210 ./FreeRTOS-Source/tasks.o
-                0x20002368                xTaskIncrementTick
+                0x2000260c      0x210 ./FreeRTOS-Source/tasks.o
+                0x2000260c                xTaskIncrementTick
  .text.vTaskSwitchContext
-                0x20002578      0x1a8 ./FreeRTOS-Source/tasks.o
-                0x20002578                vTaskSwitchContext
+                0x2000281c      0x1a8 ./FreeRTOS-Source/tasks.o
+                0x2000281c                vTaskSwitchContext
  .text.vTaskPlaceOnEventList
-                0x20002720       0x4c ./FreeRTOS-Source/tasks.o
-                0x20002720                vTaskPlaceOnEventList
+                0x200029c4       0x4c ./FreeRTOS-Source/tasks.o
+                0x200029c4                vTaskPlaceOnEventList
  .text.vTaskPlaceOnEventListRestricted
-                0x2000276c       0x58 ./FreeRTOS-Source/tasks.o
-                0x2000276c                vTaskPlaceOnEventListRestricted
+                0x20002a10       0x58 ./FreeRTOS-Source/tasks.o
+                0x20002a10                vTaskPlaceOnEventListRestricted
  .text.xTaskRemoveFromEventList
-                0x200027c4       0xf0 ./FreeRTOS-Source/tasks.o
-                0x200027c4                xTaskRemoveFromEventList
+                0x20002a68       0xf0 ./FreeRTOS-Source/tasks.o
+                0x20002a68                xTaskRemoveFromEventList
  .text.vTaskSetTimeOutState
-                0x200028b4       0x48 ./FreeRTOS-Source/tasks.o
-                0x200028b4                vTaskSetTimeOutState
+                0x20002b58       0x48 ./FreeRTOS-Source/tasks.o
+                0x20002b58                vTaskSetTimeOutState
  .text.xTaskCheckForTimeOut
-                0x200028fc       0xd0 ./FreeRTOS-Source/tasks.o
-                0x200028fc                xTaskCheckForTimeOut
+                0x20002ba0       0xd0 ./FreeRTOS-Source/tasks.o
+                0x20002ba0                xTaskCheckForTimeOut
  .text.vTaskMissedYield
-                0x200029cc       0x18 ./FreeRTOS-Source/tasks.o
-                0x200029cc                vTaskMissedYield
+                0x20002c70       0x18 ./FreeRTOS-Source/tasks.o
+                0x20002c70                vTaskMissedYield
  .text.prvIdleTask
-                0x200029e4       0x38 ./FreeRTOS-Source/tasks.o
+                0x20002c88       0x38 ./FreeRTOS-Source/tasks.o
  .text.prvInitialiseTaskLists
-                0x20002a1c       0xa4 ./FreeRTOS-Source/tasks.o
+                0x20002cc0       0xa4 ./FreeRTOS-Source/tasks.o
  .text.prvCheckTasksWaitingTermination
-                0x20002ac0       0x98 ./FreeRTOS-Source/tasks.o
+                0x20002d64       0x98 ./FreeRTOS-Source/tasks.o
  .text.prvDeleteTCB
-                0x20002b58       0x20 ./FreeRTOS-Source/tasks.o
+                0x20002dfc       0x20 ./FreeRTOS-Source/tasks.o
  .text.prvResetNextTaskUnblockTime
-                0x20002b78       0x5c ./FreeRTOS-Source/tasks.o
+                0x20002e1c       0x5c ./FreeRTOS-Source/tasks.o
  .text.xTaskGetSchedulerState
-                0x20002bd4       0x48 ./FreeRTOS-Source/tasks.o
-                0x20002bd4                xTaskGetSchedulerState
+                0x20002e78       0x48 ./FreeRTOS-Source/tasks.o
+                0x20002e78                xTaskGetSchedulerState
  .text.vTaskPriorityInherit
-                0x20002c1c      0x14c ./FreeRTOS-Source/tasks.o
-                0x20002c1c                vTaskPriorityInherit
+                0x20002ec0      0x14c ./FreeRTOS-Source/tasks.o
+                0x20002ec0                vTaskPriorityInherit
  .text.xTaskPriorityDisinherit
-                0x20002d68      0x14c ./FreeRTOS-Source/tasks.o
-                0x20002d68                xTaskPriorityDisinherit
+                0x2000300c      0x14c ./FreeRTOS-Source/tasks.o
+                0x2000300c                xTaskPriorityDisinherit
  .text.pvTaskIncrementMutexHeldCount
-                0x20002eb4       0x38 ./FreeRTOS-Source/tasks.o
-                0x20002eb4                pvTaskIncrementMutexHeldCount
+                0x20003158       0x38 ./FreeRTOS-Source/tasks.o
+                0x20003158                pvTaskIncrementMutexHeldCount
  .text.ulTaskNotifyTake
-                0x20002eec       0xc0 ./FreeRTOS-Source/tasks.o
-                0x20002eec                ulTaskNotifyTake
+                0x20003190       0xc0 ./FreeRTOS-Source/tasks.o
+                0x20003190                ulTaskNotifyTake
  .text.xTaskNotifyWait
-                0x20002fac       0xf0 ./FreeRTOS-Source/tasks.o
-                0x20002fac                xTaskNotifyWait
+                0x20003250       0xf0 ./FreeRTOS-Source/tasks.o
+                0x20003250                xTaskNotifyWait
  .text.vTaskNotifyGiveFromISR
-                0x2000309c      0x14c ./FreeRTOS-Source/tasks.o
-                0x2000309c                vTaskNotifyGiveFromISR
+                0x20003340      0x14c ./FreeRTOS-Source/tasks.o
+                0x20003340                vTaskNotifyGiveFromISR
  .text.prvAddCurrentTaskToDelayedList
-                0x200031e8      0x110 ./FreeRTOS-Source/tasks.o
+                0x2000348c      0x110 ./FreeRTOS-Source/tasks.o
  .text.xTimerCreateTimerTask
-                0x200032f8       0x74 ./FreeRTOS-Source/timers.o
-                0x200032f8                xTimerCreateTimerTask
+                0x2000359c       0x74 ./FreeRTOS-Source/timers.o
+                0x2000359c                xTimerCreateTimerTask
  .text.xTimerCreate
-                0x2000336c       0x40 ./FreeRTOS-Source/timers.o
-                0x2000336c                xTimerCreate
+                0x20003610       0x40 ./FreeRTOS-Source/timers.o
+                0x20003610                xTimerCreate
  .text.prvInitialiseNewTimer
-                0x200033ac       0x64 ./FreeRTOS-Source/timers.o
+                0x20003650       0x64 ./FreeRTOS-Source/timers.o
  .text.xTimerGenericCommand
-                0x20003410       0xcc ./FreeRTOS-Source/timers.o
-                0x20003410                xTimerGenericCommand
+                0x200036b4       0xcc ./FreeRTOS-Source/timers.o
+                0x200036b4                xTimerGenericCommand
  .text.prvProcessExpiredTimer
-                0x200034dc       0x8c ./FreeRTOS-Source/timers.o
+                0x20003780       0x8c ./FreeRTOS-Source/timers.o
  .text.prvTimerTask
-                0x20003568       0x28 ./FreeRTOS-Source/timers.o
+                0x2000380c       0x28 ./FreeRTOS-Source/timers.o
  .text.prvProcessTimerOrBlockTask
-                0x20003590       0xac ./FreeRTOS-Source/timers.o
+                0x20003834       0xac ./FreeRTOS-Source/timers.o
  .text.prvGetNextExpireTime
-                0x2000363c       0x50 ./FreeRTOS-Source/timers.o
+                0x200038e0       0x50 ./FreeRTOS-Source/timers.o
  .text.prvSampleTimeNow
-                0x2000368c       0x50 ./FreeRTOS-Source/timers.o
+                0x20003930       0x50 ./FreeRTOS-Source/timers.o
  .text.prvInsertTimerInActiveList
-                0x200036dc       0x98 ./FreeRTOS-Source/timers.o
+                0x20003980       0x98 ./FreeRTOS-Source/timers.o
  .text.prvProcessReceivedCommands
-                0x20003774      0x184 ./FreeRTOS-Source/timers.o
+                0x20003a18      0x184 ./FreeRTOS-Source/timers.o
  .text.prvSwitchTimerLists
-                0x200038f8       0xf4 ./FreeRTOS-Source/timers.o
+                0x20003b9c       0xf4 ./FreeRTOS-Source/timers.o
  .text.prvCheckForValidListAndQueue
-                0x200039ec       0x74 ./FreeRTOS-Source/timers.o
+                0x20003c90       0x74 ./FreeRTOS-Source/timers.o
  .text.pvPortMalloc
-                0x20003a60      0x1f8 ./FreeRTOS-Source/portable/MemMang/heap_4.o
-                0x20003a60                pvPortMalloc
+                0x20003d04      0x1f8 ./FreeRTOS-Source/portable/MemMang/heap_4.o
+                0x20003d04                pvPortMalloc
  .text.vPortFree
-                0x20003c58       0xd8 ./FreeRTOS-Source/portable/MemMang/heap_4.o
-                0x20003c58                vPortFree
+                0x20003efc       0xd8 ./FreeRTOS-Source/portable/MemMang/heap_4.o
+                0x20003efc                vPortFree
  .text.prvHeapInit
-                0x20003d30      0x104 ./FreeRTOS-Source/portable/MemMang/heap_4.o
+                0x20003fd4      0x104 ./FreeRTOS-Source/portable/MemMang/heap_4.o
  .text.prvInsertBlockIntoFreeList
-                0x20003e34       0xbc ./FreeRTOS-Source/portable/MemMang/heap_4.o
+                0x200040d8       0xbc ./FreeRTOS-Source/portable/MemMang/heap_4.o
  .text.pxPortInitialiseStack
-                0x20003ef0       0x68 ./FreeRTOS-Source/portable/GCC/ARM_CM3/port.o
-                0x20003ef0                pxPortInitialiseStack
+                0x20004194       0x68 ./FreeRTOS-Source/portable/GCC/ARM_CM3/port.o
+                0x20004194                pxPortInitialiseStack
  .text.prvTaskExitError
-                0x20003f58       0x40 ./FreeRTOS-Source/portable/GCC/ARM_CM3/port.o
- *fill*         0x20003f98        0x8 00
+                0x200041fc       0x40 ./FreeRTOS-Source/portable/GCC/ARM_CM3/port.o
+ *fill*         0x2000423c        0x4 00
  .text.SVC_Handler
-                0x20003fa0       0x30 ./FreeRTOS-Source/portable/GCC/ARM_CM3/port.o
-                0x20003fa0                SVC_Handler
+                0x20004240       0x30 ./FreeRTOS-Source/portable/GCC/ARM_CM3/port.o
+                0x20004240                SVC_Handler
  .text.prvPortStartFirstTask
-                0x20003fd0       0x20 ./FreeRTOS-Source/portable/GCC/ARM_CM3/port.o
+                0x20004270       0x20 ./FreeRTOS-Source/portable/GCC/ARM_CM3/port.o
  .text.xPortStartScheduler
-                0x20003ff0      0x10c ./FreeRTOS-Source/portable/GCC/ARM_CM3/port.o
-                0x20003ff0                xPortStartScheduler
+                0x20004290      0x10c ./FreeRTOS-Source/portable/GCC/ARM_CM3/port.o
+                0x20004290                xPortStartScheduler
  .text.vPortEnterCritical
-                0x200040fc       0x70 ./FreeRTOS-Source/portable/GCC/ARM_CM3/port.o
-                0x200040fc                vPortEnterCritical
+                0x2000439c       0x70 ./FreeRTOS-Source/portable/GCC/ARM_CM3/port.o
+                0x2000439c                vPortEnterCritical
  .text.vPortExitCritical
-                0x2000416c       0x64 ./FreeRTOS-Source/portable/GCC/ARM_CM3/port.o
-                0x2000416c                vPortExitCritical
+                0x2000440c       0x64 ./FreeRTOS-Source/portable/GCC/ARM_CM3/port.o
+                0x2000440c                vPortExitCritical
  .text.PendSV_Handler
-                0x200041d0       0x50 ./FreeRTOS-Source/portable/GCC/ARM_CM3/port.o
-                0x200041d0                PendSV_Handler
+                0x20004470       0x50 ./FreeRTOS-Source/portable/GCC/ARM_CM3/port.o
+                0x20004470                PendSV_Handler
  .text.SysTick_Handler
-                0x20004220       0x44 ./FreeRTOS-Source/portable/GCC/ARM_CM3/port.o
-                0x20004220                SysTick_Handler
+                0x200044c0       0x44 ./FreeRTOS-Source/portable/GCC/ARM_CM3/port.o
+                0x200044c0                SysTick_Handler
  .text.vPortSetupTimerInterrupt
-                0x20004264       0x40 ./FreeRTOS-Source/portable/GCC/ARM_CM3/port.o
-                0x20004264                vPortSetupTimerInterrupt
+                0x20004504       0x40 ./FreeRTOS-Source/portable/GCC/ARM_CM3/port.o
+                0x20004504                vPortSetupTimerInterrupt
  .text.vPortValidateInterruptPriority
-                0x200042a4       0x84 ./FreeRTOS-Source/portable/GCC/ARM_CM3/port.o
-                0x200042a4                vPortValidateInterruptPriority
+                0x20004544       0x84 ./FreeRTOS-Source/portable/GCC/ARM_CM3/port.o
+                0x20004544                vPortValidateInterruptPriority
  .text.NVIC_EnableIRQ
-                0x20004328       0x38 ./Demo_Tasks/demo_tasks.o
+                0x200045c8       0x38 ./Demo_Tasks/demo_tasks.o
  .text.NVIC_SetPriority
-                0x20004360       0x5c ./Demo_Tasks/demo_tasks.o
+                0x20004600       0x5c ./Demo_Tasks/demo_tasks.o
  .text.get_hk_data
-                0x200043bc      0x3d4 ./Demo_Tasks/demo_tasks.o
-                0x200043bc                get_hk_data
+                0x2000465c      0x408 ./Demo_Tasks/demo_tasks.o
+                0x2000465c                get_hk_data
  .text.get_pld_data
-                0x20004790       0xcc ./Demo_Tasks/demo_tasks.o
-                0x20004790                get_pld_data
+                0x20004a64       0xcc ./Demo_Tasks/demo_tasks.o
+                0x20004a64                get_pld_data
  .text.vtlm_task
-                0x2000485c      0x228 ./Demo_Tasks/demo_tasks.o
-                0x2000485c                vtlm_task
+                0x20004b30      0x228 ./Demo_Tasks/demo_tasks.o
+                0x20004b30                vtlm_task
  .text.vtlm_sender
-                0x20004a84       0x68 ./Demo_Tasks/demo_tasks.o
-                0x20004a84                vtlm_sender
+                0x20004d58       0x68 ./Demo_Tasks/demo_tasks.o
+                0x20004d58                vtlm_sender
  .text.irq_tsk_func
-                0x20004aec      0x12c ./Demo_Tasks/demo_tasks.o
-                0x20004aec                irq_tsk_func
+                0x20004dc0       0x7c ./Demo_Tasks/demo_tasks.o
+                0x20004dc0                irq_tsk_func
  .text.uart0_rx_handler
-                0x20004c18       0x68 ./Demo_Tasks/demo_tasks.o
-                0x20004c18                uart0_rx_handler
+                0x20004e3c       0x68 ./Demo_Tasks/demo_tasks.o
+                0x20004e3c                uart0_rx_handler
  .text.demo_tasks
-                0x20004c80      0x260 ./Demo_Tasks/demo_tasks.o
-                0x20004c80                demo_tasks
+                0x20004ea4      0x2c8 ./Demo_Tasks/demo_tasks.o
+                0x20004ea4                demo_tasks
  .text.FabricIrq0_IRQHandler
-                0x20004ee0       0x14 ./Demo_Tasks/demo_tasks.o
-                0x20004ee0                FabricIrq0_IRQHandler
+                0x2000516c       0x14 ./Demo_Tasks/demo_tasks.o
+                0x2000516c                FabricIrq0_IRQHandler
  .text.FabricIrq1_IRQHandler
-                0x20004ef4       0x14 ./Demo_Tasks/demo_tasks.o
-                0x20004ef4                FabricIrq1_IRQHandler
+                0x20005180       0x14 ./Demo_Tasks/demo_tasks.o
+                0x20005180                FabricIrq1_IRQHandler
  .text.FabricIrq2_IRQHandler
-                0x20004f08       0x14 ./Demo_Tasks/demo_tasks.o
-                0x20004f08                FabricIrq2_IRQHandler
+                0x20005194       0x14 ./Demo_Tasks/demo_tasks.o
+                0x20005194                FabricIrq2_IRQHandler
  .text.FabricIrq3_IRQHandler
-                0x20004f1c       0x14 ./Demo_Tasks/demo_tasks.o
-                0x20004f1c                FabricIrq3_IRQHandler
+                0x200051a8       0x14 ./Demo_Tasks/demo_tasks.o
+                0x200051a8                FabricIrq3_IRQHandler
  .text.FabricIrq4_IRQHandler
-                0x20004f30       0x14 ./Demo_Tasks/demo_tasks.o
-                0x20004f30                FabricIrq4_IRQHandler
+                0x200051bc       0x14 ./Demo_Tasks/demo_tasks.o
+                0x200051bc                FabricIrq4_IRQHandler
  .text.FabricIrq5_IRQHandler
-                0x20004f44       0x14 ./Demo_Tasks/demo_tasks.o
-                0x20004f44                FabricIrq5_IRQHandler
+                0x200051d0       0x14 ./Demo_Tasks/demo_tasks.o
+                0x200051d0                FabricIrq5_IRQHandler
  .text.NVIC_EnableIRQ
-                0x20004f58       0x38 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(mss_uart.o)
+                0x200051e4       0x38 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(mss_uart.o)
  .text.NVIC_ClearPendingIRQ
-                0x20004f90       0x3c C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(mss_uart.o)
+                0x2000521c       0x3c C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(mss_uart.o)
  .text.set_bit_reg8
-                0x20004fcc       0x40 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(mss_uart.o)
+                0x20005258       0x40 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(mss_uart.o)
  .text.clear_bit_reg8
-                0x2000500c       0x40 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(mss_uart.o)
+                0x20005298       0x40 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(mss_uart.o)
  .text.read_bit_reg8
-                0x2000504c       0x40 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(mss_uart.o)
+                0x200052d8       0x40 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(mss_uart.o)
  .text.MSS_UART_init
-                0x2000508c       0x84 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(mss_uart.o)
-                0x2000508c                MSS_UART_init
+                0x20005318       0x84 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(mss_uart.o)
+                0x20005318                MSS_UART_init
  .text.MSS_UART_polled_tx
-                0x20005110       0xe4 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(mss_uart.o)
-                0x20005110                MSS_UART_polled_tx
+                0x2000539c       0xe4 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(mss_uart.o)
+                0x2000539c                MSS_UART_polled_tx
  .text.MSS_UART_get_rx
-                0x200051f4       0xdc C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(mss_uart.o)
-                0x200051f4                MSS_UART_get_rx
+                0x20005480       0xdc C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(mss_uart.o)
+                0x20005480                MSS_UART_get_rx
  .text.MSS_UART_set_rx_handler
-                0x200052d0       0xc0 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(mss_uart.o)
-                0x200052d0                MSS_UART_set_rx_handler
+                0x2000555c       0xc0 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(mss_uart.o)
+                0x2000555c                MSS_UART_set_rx_handler
  .text.UART0_IRQHandler
-                0x20005390       0x24 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(mss_uart.o)
-                0x20005390                UART0_IRQHandler
+                0x2000561c       0x24 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(mss_uart.o)
+                0x2000561c                UART0_IRQHandler
  .text.UART1_IRQHandler
-                0x200053b4       0x24 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(mss_uart.o)
-                0x200053b4                UART1_IRQHandler
+                0x20005640       0x24 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(mss_uart.o)
+                0x20005640                UART1_IRQHandler
  .text.config_baud_divisors
-                0x200053d8      0x198 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(mss_uart.o)
+                0x20005664      0x198 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(mss_uart.o)
  .text.global_init
-                0x20005570      0x26c C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(mss_uart.o)
+                0x200057fc      0x26c C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(mss_uart.o)
  .text.MSS_UART_isr
-                0x200057dc      0x22c C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(mss_uart.o)
+                0x20005a68      0x22c C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(mss_uart.o)
  .text.default_tx_handler
-                0x20005a08      0x10c C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(mss_uart.o)
+                0x20005c94      0x10c C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(mss_uart.o)
  .text.I2C_init
-                0x20005b14       0xec C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(core_i2c.o)
-                0x20005b14                I2C_init
+                0x20005da0       0xec C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(core_i2c.o)
+                0x20005da0                I2C_init
  .text.I2C_write
-                0x20005c00       0xe4 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(core_i2c.o)
-                0x20005c00                I2C_write
+                0x20005e8c       0xe4 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(core_i2c.o)
+                0x20005e8c                I2C_write
  .text.I2C_read
-                0x20005ce4       0xe4 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(core_i2c.o)
-                0x20005ce4                I2C_read
+                0x20005f70       0xe4 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(core_i2c.o)
+                0x20005f70                I2C_read
  .text.I2C_write_read
-                0x20005dc8      0x130 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(core_i2c.o)
-                0x20005dc8                I2C_write_read
+                0x20006054      0x130 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(core_i2c.o)
+                0x20006054                I2C_write_read
  .text.I2C_wait_complete
-                0x20005ef8       0x38 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(core_i2c.o)
-                0x20005ef8                I2C_wait_complete
+                0x20006184       0x38 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(core_i2c.o)
+                0x20006184                I2C_wait_complete
  .text.enable_slave_if_required
-                0x20005f30       0x30 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(core_i2c.o)
- .text.I2C_isr  0x20005f60      0xa94 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(core_i2c.o)
-                0x20005f60                I2C_isr
+                0x200061bc       0x30 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(core_i2c.o)
+ .text.I2C_isr  0x200061ec      0xa94 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(core_i2c.o)
+                0x200061ec                I2C_isr
  .text.NVIC_EnableIRQ
-                0x200069f4       0x38 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(i2c_interrupt.o)
+                0x20006c80       0x38 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(i2c_interrupt.o)
  .text.NVIC_DisableIRQ
-                0x20006a2c       0x3c C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(i2c_interrupt.o)
+                0x20006cb8       0x3c C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(i2c_interrupt.o)
  .text.I2C_enable_irq
-                0x20006a68       0x94 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(i2c_interrupt.o)
-                0x20006a68                I2C_enable_irq
+                0x20006cf4       0x94 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(i2c_interrupt.o)
+                0x20006cf4                I2C_enable_irq
  .text.I2C_disable_irq
-                0x20006afc       0x94 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(i2c_interrupt.o)
-                0x20006afc                I2C_disable_irq
+                0x20006d88       0x94 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(i2c_interrupt.o)
+                0x20006d88                I2C_disable_irq
  .text.SystemInit
-                0x20006b90       0x2c C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(system_m2sxxx.o)
-                0x20006b90                SystemInit
+                0x20006e1c       0x2c C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(system_m2sxxx.o)
+                0x20006e1c                SystemInit
  .text.SystemCoreClockUpdate
-                0x20006bbc      0x14c C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(system_m2sxxx.o)
-                0x20006bbc                SystemCoreClockUpdate
+                0x20006e48      0x14c C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(system_m2sxxx.o)
+                0x20006e48                SystemCoreClockUpdate
  .text.get_rcosc_25_50mhz_frequency
-                0x20006d08       0x44 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(system_m2sxxx.o)
+                0x20006f94       0x44 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(system_m2sxxx.o)
  .text.set_clock_frequency_globals
-                0x20006d4c       0x6c C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(system_m2sxxx.o)
+                0x20006fd8       0x6c C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(system_m2sxxx.o)
  .text.get_silicon_revision
-                0x20006db8       0x50 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(system_m2sxxx.o)
+                0x20007044       0x50 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(system_m2sxxx.o)
  .text.silicon_workarounds
-                0x20006e08       0x20 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(system_m2sxxx.o)
+                0x20007094       0x20 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(system_m2sxxx.o)
  .text.m2s050_rev_a_workarounds
-                0x20006e28       0x44 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(system_m2sxxx.o)
+                0x200070b4       0x44 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(system_m2sxxx.o)
  .text.complete_clock_config
-                0x20006e6c       0x90 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(system_m2sxxx.o)
- .text          0x20006efc        0xe C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(hal.o)
-                0x20006efc                HAL_disable_interrupts
-                0x20006f04                HAL_restore_interrupts
- .text          0x20006f0a       0x90 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(hw_reg_access.o)
-                0x20006f0a                HW_set_32bit_reg
-                0x20006f0e                HW_get_32bit_reg
-                0x20006f12                HW_set_32bit_reg_field
-                0x20006f2e                HW_get_32bit_reg_field
-                0x20006f3a                HW_set_16bit_reg
-                0x20006f3e                HW_get_16bit_reg
-                0x20006f42                HW_set_16bit_reg_field
-                0x20006f5e                HW_get_16bit_reg_field
-                0x20006f6a                HW_set_8bit_reg
-                0x20006f6e                HW_get_8bit_reg
-                0x20006f72                HW_set_8bit_reg_field
-                0x20006f8e                HW_get_8bit_reg_field
- *fill*         0x20006f9a        0x2 00
- .text          0x20006f9c       0x50 c:/program files (x86)/microsemi/softconsole v3.4/sourcery-g++/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/lib/thumb2\libc.a(lib_a-init.o)
-                0x20006f9c                __libc_init_array
- .text          0x20006fec      0x190 c:/program files (x86)/microsemi/softconsole v3.4/sourcery-g++/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/lib/thumb2\libc.a(lib_a-memcpy.o)
-                0x20006fec                memcpy
- .text          0x2000717c       0xd4 c:/program files (x86)/microsemi/softconsole v3.4/sourcery-g++/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/lib/thumb2\libc.a(lib_a-memset.o)
-                0x2000717c                memset
+                0x200070f8       0x90 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(system_m2sxxx.o)
+ .text          0x20007188        0xe C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(hal.o)
+                0x20007188                HAL_disable_interrupts
+                0x20007190                HAL_restore_interrupts
+ .text          0x20007196       0x90 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(hw_reg_access.o)
+                0x20007196                HW_set_32bit_reg
+                0x2000719a                HW_get_32bit_reg
+                0x2000719e                HW_set_32bit_reg_field
+                0x200071ba                HW_get_32bit_reg_field
+                0x200071c6                HW_set_16bit_reg
+                0x200071ca                HW_get_16bit_reg
+                0x200071ce                HW_set_16bit_reg_field
+                0x200071ea                HW_get_16bit_reg_field
+                0x200071f6                HW_set_8bit_reg
+                0x200071fa                HW_get_8bit_reg
+                0x200071fe                HW_set_8bit_reg_field
+                0x2000721a                HW_get_8bit_reg_field
+ *fill*         0x20007226        0x2 00
+ .text          0x20007228       0x50 c:/program files (x86)/microsemi/softconsole v3.4/sourcery-g++/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/lib/thumb2\libc.a(lib_a-init.o)
+                0x20007228                __libc_init_array
+ .text          0x20007278      0x190 c:/program files (x86)/microsemi/softconsole v3.4/sourcery-g++/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/lib/thumb2\libc.a(lib_a-memcpy.o)
+                0x20007278                memcpy
+ .text          0x20007408       0xd4 c:/program files (x86)/microsemi/softconsole v3.4/sourcery-g++/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/lib/thumb2\libc.a(lib_a-memset.o)
+                0x20007408                memset
  *(.plt)
  *(.gnu.warning)
  *(.glue_7t)
@@ -1058,7 +1085,7 @@ END GROUP
  .glue_7        0x00000000        0x0 linker stubs
  *(.vfp11_veneer)
  .vfp11_veneer  0x00000000        0x0 linker stubs
-                0x20007250                . = ALIGN (0x4)
+                0x200074dc                . = ALIGN (0x4)
  *crtbegin.o(.ctors)
  *(EXCLUDE_FILE(*crtend.o) .ctors)
  *(SORT(.ctors.*))
@@ -1069,249 +1096,261 @@ END GROUP
  *crtend.o(.dtors)
  *(.rodata .rodata.* .gnu.linkonce.r.*)
  .rodata.C.48.4660
-                0x20007250        0x4 ./pilot/get_data.o
+                0x200074dc        0x4 ./pilot/get_data.o
  .rodata.C.40.4595
-                0x20007254        0x4 ./pilot/get_data.o
- .rodata        0x20007258       0x30 ./FreeRTOS-Source/tasks.o
- .rodata        0x20007288        0x8 ./FreeRTOS-Source/timers.o
+                0x200074e0        0x4 ./pilot/get_data.o
+ .rodata        0x200074e4        0xc ./cmds/cmd.o
+ .rodata        0x200074f0       0x30 ./FreeRTOS-Source/tasks.o
+ .rodata        0x20007520        0x8 ./FreeRTOS-Source/timers.o
  .rodata.xHeapStructSize
-                0x20007290        0x4 ./FreeRTOS-Source/portable/MemMang/heap_4.o
+                0x20007528        0x4 ./FreeRTOS-Source/portable/MemMang/heap_4.o
  .rodata.pcInterruptPriorityRegisters
-                0x20007294        0x4 ./FreeRTOS-Source/portable/GCC/ARM_CM3/port.o
- .rodata        0x20007298       0x38 ./Demo_Tasks/demo_tasks.o
+                0x2000752c        0x4 ./FreeRTOS-Source/portable/GCC/ARM_CM3/port.o
+ .rodata        0x20007530       0x38 ./Demo_Tasks/demo_tasks.o
+ .rodata.C.136.6353
+                0x20007568        0x4 ./Demo_Tasks/demo_tasks.o
+ .rodata.C.137.6354
+                0x2000756c        0x4 ./Demo_Tasks/demo_tasks.o
+ .rodata.C.138.6355
+                0x20007570        0x4 ./Demo_Tasks/demo_tasks.o
  .rodata.C.18.3459
-                0x200072d0        0x8 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(system_m2sxxx.o)
+                0x20007574        0x8 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(system_m2sxxx.o)
  *(.ARM.extab* .gnu.linkonce.armextab.*)
  *(.gcc_except_table)
  *(.eh_frame_hdr)
  *(.eh_frame)
  *(.init)
- .init          0x200072d8        0x4 c:/program files (x86)/microsemi/softconsole v3.4/sourcery-g++/bin/../lib/gcc/arm-none-eabi/4.4.1/thumb2/crti.o
-                0x200072d8                _init
- .init          0x200072dc        0x8 c:/program files (x86)/microsemi/softconsole v3.4/sourcery-g++/bin/../lib/gcc/arm-none-eabi/4.4.1/thumb2/crtn.o
+ .init          0x2000757c        0x4 c:/program files (x86)/microsemi/softconsole v3.4/sourcery-g++/bin/../lib/gcc/arm-none-eabi/4.4.1/thumb2/crti.o
+                0x2000757c                _init
+ .init          0x20007580        0x8 c:/program files (x86)/microsemi/softconsole v3.4/sourcery-g++/bin/../lib/gcc/arm-none-eabi/4.4.1/thumb2/crtn.o
  *(.fini)
- .fini          0x200072e4        0x4 c:/program files (x86)/microsemi/softconsole v3.4/sourcery-g++/bin/../lib/gcc/arm-none-eabi/4.4.1/thumb2/crti.o
-                0x200072e4                _fini
- .fini          0x200072e8        0x8 c:/program files (x86)/microsemi/softconsole v3.4/sourcery-g++/bin/../lib/gcc/arm-none-eabi/4.4.1/thumb2/crtn.o
-                0x200072f0                PROVIDE (__preinit_array_start, .)
+ .fini          0x20007588        0x4 c:/program files (x86)/microsemi/softconsole v3.4/sourcery-g++/bin/../lib/gcc/arm-none-eabi/4.4.1/thumb2/crti.o
+                0x20007588                _fini
+ .fini          0x2000758c        0x8 c:/program files (x86)/microsemi/softconsole v3.4/sourcery-g++/bin/../lib/gcc/arm-none-eabi/4.4.1/thumb2/crtn.o
+                0x20007594                PROVIDE (__preinit_array_start, .)
  *(.preinit_array)
-                0x200072f0                PROVIDE (__preinit_array_end, .)
-                0x200072f0                PROVIDE (__init_array_start, .)
+                0x20007594                PROVIDE (__preinit_array_end, .)
+                0x20007594                PROVIDE (__init_array_start, .)
  *(SORT(.init_array.*))
  *(.init_array)
- .init_array    0x200072f0        0x4 c:/program files (x86)/microsemi/softconsole v3.4/sourcery-g++/bin/../lib/gcc/arm-none-eabi/4.4.1/thumb2/crtbegin.o
-                0x200072f4                PROVIDE (__init_array_end, .)
-                0x200072f4                PROVIDE (__fini_array_start, .)
+ .init_array    0x20007594        0x4 c:/program files (x86)/microsemi/softconsole v3.4/sourcery-g++/bin/../lib/gcc/arm-none-eabi/4.4.1/thumb2/crtbegin.o
+                0x20007598                PROVIDE (__init_array_end, .)
+                0x20007598                PROVIDE (__fini_array_start, .)
  *(.fini_array)
- .fini_array    0x200072f4        0x4 c:/program files (x86)/microsemi/softconsole v3.4/sourcery-g++/bin/../lib/gcc/arm-none-eabi/4.4.1/thumb2/crtbegin.o
+ .fini_array    0x20007598        0x4 c:/program files (x86)/microsemi/softconsole v3.4/sourcery-g++/bin/../lib/gcc/arm-none-eabi/4.4.1/thumb2/crtbegin.o
  *(SORT(.fini_array.*))
-                0x200072f8                PROVIDE (__fini_array_end, .)
-                0x200072f8                __exidx_start = .
+                0x2000759c                PROVIDE (__fini_array_end, .)
+                0x2000759c                __exidx_start = .
 
-.v4_bx          0x200072f8        0x0
+.v4_bx          0x2000759c        0x0
  .v4_bx         0x00000000        0x0 linker stubs
 
 .ARM.exidx
  *(.ARM.exidx* .gnu.linkonce.armexidx.*)
-                0x200072f8                __exidx_end = .
-                0x200072f8                _etext = .
-                0x200072f8                PROVIDE (__text_end, .)
+                0x2000759c                __exidx_end = .
+                0x2000759c                _etext = .
+                0x2000759c                PROVIDE (__text_end, .)
 
-.data           0x200072f8       0x60
-                0x200072f8                __data_load = LOADADDR (.data)
-                0x200072f8                _sidata = LOADADDR (.data)
-                0x200072f8                __data_start = .
-                0x200072f8                _sdata = .
+.data           0x2000759c       0x60
+                0x2000759c                __data_load = LOADADDR (.data)
+                0x2000759c                _sidata = LOADADDR (.data)
+                0x2000759c                __data_start = .
+                0x2000759c                _sdata = .
  *(.jcr)
- .jcr           0x200072f8        0x0 c:/program files (x86)/microsemi/softconsole v3.4/sourcery-g++/bin/../lib/gcc/arm-none-eabi/4.4.1/thumb2/crtbegin.o
- .jcr           0x200072f8        0x4 c:/program files (x86)/microsemi/softconsole v3.4/sourcery-g++/bin/../lib/gcc/arm-none-eabi/4.4.1/thumb2/crtend.o
+ .jcr           0x2000759c        0x0 c:/program files (x86)/microsemi/softconsole v3.4/sourcery-g++/bin/../lib/gcc/arm-none-eabi/4.4.1/thumb2/crtbegin.o
+ .jcr           0x2000759c        0x4 c:/program files (x86)/microsemi/softconsole v3.4/sourcery-g++/bin/../lib/gcc/arm-none-eabi/4.4.1/thumb2/crtend.o
  *(.got.plt)
  *(.got)
  *(.shdata)
  *(.data .data.* .gnu.linkonce.d.*)
  .data.uxCriticalNesting
-                0x200072fc        0x4 ./FreeRTOS-Source/portable/GCC/ARM_CM3/port.o
+                0x200075a0        0x4 ./FreeRTOS-Source/portable/GCC/ARM_CM3/port.o
  .data.imu_struct
-                0x20007300       0x20 ./Demo_Tasks/demo_tasks.o
+                0x200075a4       0x20 ./Demo_Tasks/demo_tasks.o
  .data.vc_struct
-                0x20007320       0x1c ./Demo_Tasks/demo_tasks.o
+                0x200075c4       0x1c ./Demo_Tasks/demo_tasks.o
  .data.SystemCoreClock
-                0x2000733c        0x4 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(system_m2sxxx.o)
-                0x2000733c                SystemCoreClock
+                0x200075e0        0x4 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(system_m2sxxx.o)
+                0x200075e0                SystemCoreClock
  .data.g_FrequencyPCLK0
-                0x20007340        0x4 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(system_m2sxxx.o)
-                0x20007340                g_FrequencyPCLK0
+                0x200075e4        0x4 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(system_m2sxxx.o)
+                0x200075e4                g_FrequencyPCLK0
  .data.g_FrequencyPCLK1
-                0x20007344        0x4 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(system_m2sxxx.o)
-                0x20007344                g_FrequencyPCLK1
+                0x200075e8        0x4 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(system_m2sxxx.o)
+                0x200075e8                g_FrequencyPCLK1
  .data.g_FrequencyPCLK2
-                0x20007348        0x4 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(system_m2sxxx.o)
-                0x20007348                g_FrequencyPCLK2
+                0x200075ec        0x4 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(system_m2sxxx.o)
+                0x200075ec                g_FrequencyPCLK2
  .data.g_FrequencyFIC0
-                0x2000734c        0x4 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(system_m2sxxx.o)
-                0x2000734c                g_FrequencyFIC0
+                0x200075f0        0x4 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(system_m2sxxx.o)
+                0x200075f0                g_FrequencyFIC0
  .data.g_FrequencyFIC1
-                0x20007350        0x4 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(system_m2sxxx.o)
-                0x20007350                g_FrequencyFIC1
+                0x200075f4        0x4 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(system_m2sxxx.o)
+                0x200075f4                g_FrequencyFIC1
  .data.g_FrequencyFIC64
-                0x20007354        0x4 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(system_m2sxxx.o)
-                0x20007354                g_FrequencyFIC64
-                0x20007358                . = ALIGN (0x4)
-                0x20007358                _edata = .
+                0x200075f8        0x4 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(system_m2sxxx.o)
+                0x200075f8                g_FrequencyFIC64
+                0x200075fc                . = ALIGN (0x4)
+                0x200075fc                _edata = .
 
-.bss            0x20007358     0x6b00
-                0x20007358                __bss_start__ = .
-                0x20007358                _sbss = .
+.bss            0x200075fc     0x6b1c
+                0x200075fc                __bss_start__ = .
+                0x200075fc                _sbss = .
  *(.shbss)
  *(.bss .bss.* .gnu.linkonce.b.*)
- .bss           0x20007358        0x1 c:/program files (x86)/microsemi/softconsole v3.4/sourcery-g++/bin/../lib/gcc/arm-none-eabi/4.4.1/thumb2/crtbegin.o
- *fill*         0x20007359        0x3 00
+ .bss           0x200075fc        0x1 c:/program files (x86)/microsemi/softconsole v3.4/sourcery-g++/bin/../lib/gcc/arm-none-eabi/4.4.1/thumb2/crtbegin.o
+ *fill*         0x200075fd        0x3 00
  .bss.ulLastCounterValue.1425
-                0x2000735c        0x4 ./RunTimeStatsTimer.o
+                0x20007600        0x4 ./RunTimeStatsTimer.o
  .bss.ulOverflows.1426
-                0x20007360        0x4 ./RunTimeStatsTimer.o
+                0x20007604        0x4 ./RunTimeStatsTimer.o
  .bss.pxCurrentTCB
-                0x20007364        0x4 ./FreeRTOS-Source/tasks.o
-                0x20007364                pxCurrentTCB
+                0x20007608        0x4 ./FreeRTOS-Source/tasks.o
+                0x20007608                pxCurrentTCB
  .bss.pxReadyTasksLists
-                0x20007368       0x64 ./FreeRTOS-Source/tasks.o
+                0x2000760c       0x64 ./FreeRTOS-Source/tasks.o
  .bss.xDelayedTaskList1
-                0x200073cc       0x14 ./FreeRTOS-Source/tasks.o
+                0x20007670       0x14 ./FreeRTOS-Source/tasks.o
  .bss.xDelayedTaskList2
-                0x200073e0       0x14 ./FreeRTOS-Source/tasks.o
+                0x20007684       0x14 ./FreeRTOS-Source/tasks.o
  .bss.pxDelayedTaskList
-                0x200073f4        0x4 ./FreeRTOS-Source/tasks.o
+                0x20007698        0x4 ./FreeRTOS-Source/tasks.o
  .bss.pxOverflowDelayedTaskList
-                0x200073f8        0x4 ./FreeRTOS-Source/tasks.o
+                0x2000769c        0x4 ./FreeRTOS-Source/tasks.o
  .bss.xPendingReadyList
-                0x200073fc       0x14 ./FreeRTOS-Source/tasks.o
+                0x200076a0       0x14 ./FreeRTOS-Source/tasks.o
  .bss.xTasksWaitingTermination
-                0x20007410       0x14 ./FreeRTOS-Source/tasks.o
+                0x200076b4       0x14 ./FreeRTOS-Source/tasks.o
  .bss.uxDeletedTasksWaitingCleanUp
-                0x20007424        0x4 ./FreeRTOS-Source/tasks.o
+                0x200076c8        0x4 ./FreeRTOS-Source/tasks.o
  .bss.xSuspendedTaskList
-                0x20007428       0x14 ./FreeRTOS-Source/tasks.o
+                0x200076cc       0x14 ./FreeRTOS-Source/tasks.o
  .bss.uxCurrentNumberOfTasks
-                0x2000743c        0x4 ./FreeRTOS-Source/tasks.o
+                0x200076e0        0x4 ./FreeRTOS-Source/tasks.o
  .bss.xTickCount
-                0x20007440        0x4 ./FreeRTOS-Source/tasks.o
+                0x200076e4        0x4 ./FreeRTOS-Source/tasks.o
  .bss.uxTopReadyPriority
-                0x20007444        0x4 ./FreeRTOS-Source/tasks.o
+                0x200076e8        0x4 ./FreeRTOS-Source/tasks.o
  .bss.xSchedulerRunning
-                0x20007448        0x4 ./FreeRTOS-Source/tasks.o
+                0x200076ec        0x4 ./FreeRTOS-Source/tasks.o
  .bss.uxPendedTicks
-                0x2000744c        0x4 ./FreeRTOS-Source/tasks.o
+                0x200076f0        0x4 ./FreeRTOS-Source/tasks.o
  .bss.xYieldPending
-                0x20007450        0x4 ./FreeRTOS-Source/tasks.o
+                0x200076f4        0x4 ./FreeRTOS-Source/tasks.o
  .bss.xNumOfOverflows
-                0x20007454        0x4 ./FreeRTOS-Source/tasks.o
+                0x200076f8        0x4 ./FreeRTOS-Source/tasks.o
  .bss.uxTaskNumber
-                0x20007458        0x4 ./FreeRTOS-Source/tasks.o
+                0x200076fc        0x4 ./FreeRTOS-Source/tasks.o
  .bss.xNextTaskUnblockTime
-                0x2000745c        0x4 ./FreeRTOS-Source/tasks.o
+                0x20007700        0x4 ./FreeRTOS-Source/tasks.o
  .bss.xIdleTaskHandle
-                0x20007460        0x4 ./FreeRTOS-Source/tasks.o
+                0x20007704        0x4 ./FreeRTOS-Source/tasks.o
  .bss.uxSchedulerSuspended
-                0x20007464        0x4 ./FreeRTOS-Source/tasks.o
+                0x20007708        0x4 ./FreeRTOS-Source/tasks.o
  .bss.ulTaskSwitchedInTime
-                0x20007468        0x4 ./FreeRTOS-Source/tasks.o
+                0x2000770c        0x4 ./FreeRTOS-Source/tasks.o
  .bss.ulTotalRunTime
-                0x2000746c        0x4 ./FreeRTOS-Source/tasks.o
+                0x20007710        0x4 ./FreeRTOS-Source/tasks.o
  .bss.xActiveTimerList1
-                0x20007470       0x14 ./FreeRTOS-Source/timers.o
+                0x20007714       0x14 ./FreeRTOS-Source/timers.o
  .bss.xActiveTimerList2
-                0x20007484       0x14 ./FreeRTOS-Source/timers.o
+                0x20007728       0x14 ./FreeRTOS-Source/timers.o
  .bss.pxCurrentTimerList
-                0x20007498        0x4 ./FreeRTOS-Source/timers.o
+                0x2000773c        0x4 ./FreeRTOS-Source/timers.o
  .bss.pxOverflowTimerList
-                0x2000749c        0x4 ./FreeRTOS-Source/timers.o
+                0x20007740        0x4 ./FreeRTOS-Source/timers.o
  .bss.xTimerQueue
-                0x200074a0        0x4 ./FreeRTOS-Source/timers.o
+                0x20007744        0x4 ./FreeRTOS-Source/timers.o
  .bss.xTimerTaskHandle
-                0x200074a4        0x4 ./FreeRTOS-Source/timers.o
+                0x20007748        0x4 ./FreeRTOS-Source/timers.o
  .bss.xLastTime.2561
-                0x200074a8        0x4 ./FreeRTOS-Source/timers.o
- .bss.ucHeap    0x200074ac     0x61a8 ./FreeRTOS-Source/portable/MemMang/heap_4.o
- .bss.xStart    0x2000d654        0x8 ./FreeRTOS-Source/portable/MemMang/heap_4.o
- .bss.pxEnd     0x2000d65c        0x4 ./FreeRTOS-Source/portable/MemMang/heap_4.o
+                0x2000774c        0x4 ./FreeRTOS-Source/timers.o
+ .bss.ucHeap    0x20007750     0x61a8 ./FreeRTOS-Source/portable/MemMang/heap_4.o
+ .bss.xStart    0x2000d8f8        0x8 ./FreeRTOS-Source/portable/MemMang/heap_4.o
+ .bss.pxEnd     0x2000d900        0x4 ./FreeRTOS-Source/portable/MemMang/heap_4.o
  .bss.xFreeBytesRemaining
-                0x2000d660        0x4 ./FreeRTOS-Source/portable/MemMang/heap_4.o
+                0x2000d904        0x4 ./FreeRTOS-Source/portable/MemMang/heap_4.o
  .bss.xMinimumEverFreeBytesRemaining
-                0x2000d664        0x4 ./FreeRTOS-Source/portable/MemMang/heap_4.o
+                0x2000d908        0x4 ./FreeRTOS-Source/portable/MemMang/heap_4.o
  .bss.xBlockAllocatedBit
-                0x2000d668        0x4 ./FreeRTOS-Source/portable/MemMang/heap_4.o
+                0x2000d90c        0x4 ./FreeRTOS-Source/portable/MemMang/heap_4.o
  .bss.ucMaxSysCallPriority
-                0x2000d66c        0x1 ./FreeRTOS-Source/portable/GCC/ARM_CM3/port.o
- *fill*         0x2000d66d        0x3 00
+                0x2000d910        0x1 ./FreeRTOS-Source/portable/GCC/ARM_CM3/port.o
+ *fill*         0x2000d911        0x3 00
  .bss.ulMaxPRIGROUPValue
-                0x2000d670        0x4 ./FreeRTOS-Source/portable/GCC/ARM_CM3/port.o
- .bss.uart_irq  0x2000d674        0x4 ./Demo_Tasks/demo_tasks.o
-                0x2000d674                uart_irq
+                0x2000d914        0x4 ./FreeRTOS-Source/portable/GCC/ARM_CM3/port.o
+ .bss.uart_irq  0x2000d918        0x4 ./Demo_Tasks/demo_tasks.o
+                0x2000d918                uart_irq
  *(COMMON)
- COMMON         0x2000d678      0x4e1 ./main.o
-                0x2000d678                data_pld
-                0x2000d6ac                g_core_i2c2
-                0x2000d718                uart0_irq_rx_buffer
-                0x2000d71c                argu
-                0x2000d738                c
-                0x2000d754                uart1_irq_size
-                0x2000d758                data
-                0x2000d958                device_param
-                0x2000da58                device
-                0x2000db58                command_index
- *fill*         0x2000db59        0x3 00
- COMMON         0x2000db5c        0xb ./pilot/get_data.o
-                0x2000db5c                init_command
-                0x2000db60                read
-                0x2000db62                bvol
-                0x2000db64                count
-                0x2000db65                config_reg
-                0x2000db66                status
- *fill*         0x2000db67        0x1 00
- COMMON         0x2000db68      0x224 ./pilot/peripherals.o
-                0x2000db68                g_core_i2c0
-                0x2000dbd4                g_core_i2c1
-                0x2000dc40                g_core_i2c5
-                0x2000dcac                g_core_i2c3
-                0x2000dd18                sd_timer
-                0x2000dd1c                core_i2c_status
-                0x2000dd20                g_core_i2c4
- COMMON         0x2000dd8c       0x4c ./Demo_Tasks/demo_tasks.o
-                0x2000dd8c                pkt_timer
-                0x2000dd94                command_cnt
-                0x2000dd98                feed_tlm_task
-                0x2000dd9c                get_pld_pkt_handle
-                0x2000dda0                tlm_sender_handle
-                0x2000dda4                hk_pkt
-                0x2000dda8                tlm_tsk_handle
-                0x2000ddac                feed_cmd_tsk
-                0x2000ddb0                feed_tlm_sender
-                0x2000ddb4                xMutex
-                0x2000ddb8                Data_HK_Queue
-                0x2000ddbc                feed_get_hk_data
-                0x2000ddc0                hk_task_feed
-                0x2000ddc4                get_hk_pkt_handle
-                0x2000ddc8                Data_PLD_Queue
-                0x2000ddcc                feed_get_payload_data
-                0x2000ddd0                pld_pkt
-                0x2000ddd4                cmd_tsk
- COMMON         0x2000ddd8       0x80 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(mss_uart.o)
-                0x2000ddd8                g_mss_uart1
-                0x2000de18                g_mss_uart0
-                0x2000de58                . = ALIGN (0x8)
-                0x2000de58                __bss_end__ = .
-                0x2000de58                _end = .
-                0x2000de58                __end = _end
-                0x2000de58                _ebss = .
-                0x2000de58                PROVIDE (end, .)
+ COMMON         0x2000d91c      0x4e1 ./main.o
+                0x2000d91c                data_pld
+                0x2000d950                g_core_i2c2
+                0x2000d9bc                uart0_irq_rx_buffer
+                0x2000d9c0                argu
+                0x2000d9dc                c
+                0x2000d9f8                uart1_irq_size
+                0x2000d9fc                data
+                0x2000dbfc                device_param
+                0x2000dcfc                device
+                0x2000ddfc                command_index
+ *fill*         0x2000ddfd        0x3 00
+ COMMON         0x2000de00        0xb ./pilot/get_data.o
+                0x2000de00                init_command
+                0x2000de04                read
+                0x2000de06                bvol
+                0x2000de08                count
+                0x2000de09                config_reg
+                0x2000de0a                status
+ *fill*         0x2000de0b        0x1 00
+ COMMON         0x2000de0c      0x224 ./pilot/peripherals.o
+                0x2000de0c                g_core_i2c0
+                0x2000de78                g_core_i2c1
+                0x2000dee4                g_core_i2c5
+                0x2000df50                g_core_i2c3
+                0x2000dfbc                sd_timer
+                0x2000dfc0                core_i2c_status
+                0x2000dfc4                g_core_i2c4
+ COMMON         0x2000e030       0x18 ./cmds/cmd.o
+                0x2000e030                cmd_timer
+                0x2000e034                cmd_list
+                0x2000e044                cmd
+ COMMON         0x2000e048       0x50 ./Demo_Tasks/demo_tasks.o
+                0x2000e048                pkt_timer
+                0x2000e050                command_cnt
+                0x2000e054                feed_tlm_task
+                0x2000e058                get_pld_pkt_handle
+                0x2000e05c                tlm_sender_handle
+                0x2000e060                hk_pkt
+                0x2000e064                tlm_tsk_handle
+                0x2000e068                feed_cmd_tsk
+                0x2000e06c                feed_tlm_sender
+                0x2000e070                xMutex
+                0x2000e074                Data_HK_Queue
+                0x2000e078                feed_get_hk_data
+                0x2000e07c                hk_task_feed
+                0x2000e080                get_hk_pkt_handle
+                0x2000e084                Data_PLD_Queue
+                0x2000e088                feed_get_payload_data
+                0x2000e08c                pld_pkt
+                0x2000e090                command_reject_cnt
+                0x2000e094                cmd_tsk
+ COMMON         0x2000e098       0x80 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(mss_uart.o)
+                0x2000e098                g_mss_uart1
+                0x2000e0d8                g_mss_uart0
+                0x2000e118                . = ALIGN (0x8)
+                0x2000e118                __bss_end__ = .
+                0x2000e118                _end = .
+                0x2000e118                __end = _end
+                0x2000e118                _ebss = .
+                0x2000e118                PROVIDE (end, .)
 
-.stack          0x2000de58      0x400
-                0x2000de58                . = ALIGN (0x4)
-                0x2000de58                . = (. + PROCESS_STACK_SIZE)
-                0x2000de58                . = ALIGN (0x4)
-                0x2000e258                . = (. + MAIN_STACK_SIZE)
- *fill*         0x2000de58      0x400 00
-                0x2000e258                . = ALIGN (0x4)
+.stack          0x2000e118      0x400
+                0x2000e118                . = ALIGN (0x4)
+                0x2000e118                . = (. + PROCESS_STACK_SIZE)
+                0x2000e118                . = ALIGN (0x4)
+                0x2000e518                . = (. + MAIN_STACK_SIZE)
+ *fill*         0x2000e118      0x400 00
+                0x2000e518                . = ALIGN (0x4)
 
 .stab
  *(.stab)
@@ -1331,7 +1370,7 @@ END GROUP
 .debug_sfnames
  *(.debug_sfnames)
 
-.comment        0x00000000      0x408
+.comment        0x00000000      0x433
  .comment       0x00000000       0x2b ./RunTimeStatsTimer.o
  .comment       0x0000002b       0x2b ./main.o
  .comment       0x00000056       0x2b ./printf-stdarg.o
@@ -1343,21 +1382,22 @@ END GROUP
  .comment       0x00000158       0x2b ./pilot/read.o
  .comment       0x00000183       0x2b ./pilot/write.o
  .comment       0x000001ae       0x2b ./osal/osal.o
- .comment       0x000001d9       0x2b ./FreeRTOS-Source/list.o
- .comment       0x00000204       0x2b ./FreeRTOS-Source/queue.o
- .comment       0x0000022f       0x2b ./FreeRTOS-Source/tasks.o
- .comment       0x0000025a       0x2b ./FreeRTOS-Source/timers.o
- .comment       0x00000285       0x2b ./FreeRTOS-Source/portable/MemMang/heap_4.o
- .comment       0x000002b0       0x2b ./FreeRTOS-Source/portable/GCC/ARM_CM3/port.o
- .comment       0x000002db       0x2b ./Demo_Tasks/demo_tasks.o
- .comment       0x00000306       0x2b ./Blinky-Demo/main_blinky.o
- .comment       0x00000331       0x2b C:/Users/S-SPACE/Desktop/Pratik/FreeRTOS/FreeRTOS_SC_v3.5/FSW_FreeRTOS/CORTEX_SmartFusion2_M2S050_SoftConsole/RTOSDemo_Hardware_Platform/Debug/CMSIS/startup_gcc/newlib_stubs.o
- .comment       0x0000035c       0x2b C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(mss_uart.o)
- .comment       0x00000387       0x2b C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(core_i2c.o)
- .comment       0x000003b2       0x2b C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(i2c_interrupt.o)
- .comment       0x000003dd       0x2b C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(system_m2sxxx.o)
+ .comment       0x000001d9       0x2b ./cmds/cmd.o
+ .comment       0x00000204       0x2b ./FreeRTOS-Source/list.o
+ .comment       0x0000022f       0x2b ./FreeRTOS-Source/queue.o
+ .comment       0x0000025a       0x2b ./FreeRTOS-Source/tasks.o
+ .comment       0x00000285       0x2b ./FreeRTOS-Source/timers.o
+ .comment       0x000002b0       0x2b ./FreeRTOS-Source/portable/MemMang/heap_4.o
+ .comment       0x000002db       0x2b ./FreeRTOS-Source/portable/GCC/ARM_CM3/port.o
+ .comment       0x00000306       0x2b ./Demo_Tasks/demo_tasks.o
+ .comment       0x00000331       0x2b ./Blinky-Demo/main_blinky.o
+ .comment       0x0000035c       0x2b C:/Users/S-SPACE/Desktop/Pratik/FreeRTOS/FreeRTOS_SC_v3.5/FSW_FreeRTOS/CORTEX_SmartFusion2_M2S050_SoftConsole/RTOSDemo_Hardware_Platform/Debug/CMSIS/startup_gcc/newlib_stubs.o
+ .comment       0x00000387       0x2b C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(mss_uart.o)
+ .comment       0x000003b2       0x2b C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(core_i2c.o)
+ .comment       0x000003dd       0x2b C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(i2c_interrupt.o)
+ .comment       0x00000408       0x2b C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(system_m2sxxx.o)
 
-.debug_aranges  0x00000000      0xb68
+.debug_aranges  0x00000000      0xbb8
  *(.debug_aranges)
  .debug_aranges
                 0x00000000       0x28 ./RunTimeStatsTimer.o
@@ -1376,34 +1416,36 @@ END GROUP
  .debug_aranges
                 0x00000198       0x20 ./osal/osal.o
  .debug_aranges
-                0x000001b8       0x40 ./FreeRTOS-Source/list.o
+                0x000001b8       0x50 ./cmds/cmd.o
  .debug_aranges
-                0x000001f8      0x100 ./FreeRTOS-Source/queue.o
+                0x00000208       0x40 ./FreeRTOS-Source/list.o
  .debug_aranges
-                0x000002f8      0x1f0 ./FreeRTOS-Source/tasks.o
+                0x00000248      0x100 ./FreeRTOS-Source/queue.o
  .debug_aranges
-                0x000004e8       0xc8 ./FreeRTOS-Source/timers.o
+                0x00000348      0x1f0 ./FreeRTOS-Source/tasks.o
  .debug_aranges
-                0x000005b0       0x50 ./FreeRTOS-Source/portable/MemMang/heap_4.o
+                0x00000538       0xc8 ./FreeRTOS-Source/timers.o
  .debug_aranges
-                0x00000600       0x78 ./FreeRTOS-Source/portable/GCC/ARM_CM3/port.o
+                0x00000600       0x50 ./FreeRTOS-Source/portable/MemMang/heap_4.o
  .debug_aranges
-                0x00000678       0xa8 ./Demo_Tasks/demo_tasks.o
+                0x00000650       0x78 ./FreeRTOS-Source/portable/GCC/ARM_CM3/port.o
  .debug_aranges
-                0x00000720       0x30 ./Blinky-Demo/main_blinky.o
+                0x000006c8       0xa8 ./Demo_Tasks/demo_tasks.o
  .debug_aranges
-                0x00000750       0xa8 C:/Users/S-SPACE/Desktop/Pratik/FreeRTOS/FreeRTOS_SC_v3.5/FSW_FreeRTOS/CORTEX_SmartFusion2_M2S050_SoftConsole/RTOSDemo_Hardware_Platform/Debug/CMSIS/startup_gcc/newlib_stubs.o
+                0x00000770       0x30 ./Blinky-Demo/main_blinky.o
  .debug_aranges
-                0x000007f8      0x1d0 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(mss_uart.o)
+                0x000007a0       0xa8 C:/Users/S-SPACE/Desktop/Pratik/FreeRTOS/FreeRTOS_SC_v3.5/FSW_FreeRTOS/CORTEX_SmartFusion2_M2S050_SoftConsole/RTOSDemo_Hardware_Platform/Debug/CMSIS/startup_gcc/newlib_stubs.o
  .debug_aranges
-                0x000009c8      0x110 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(core_i2c.o)
+                0x00000848      0x1d0 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(mss_uart.o)
  .debug_aranges
-                0x00000ad8       0x38 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(i2c_interrupt.o)
+                0x00000a18      0x110 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(core_i2c.o)
  .debug_aranges
-                0x00000b10       0x58 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(system_m2sxxx.o)
+                0x00000b28       0x38 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(i2c_interrupt.o)
+ .debug_aranges
+                0x00000b60       0x58 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(system_m2sxxx.o)
 
 .debug_pubnames
-                0x00000000     0x1bfc
+                0x00000000     0x1d4b
  *(.debug_pubnames)
  .debug_pubnames
                 0x00000000       0x52 ./RunTimeStatsTimer.o
@@ -1424,33 +1466,35 @@ END GROUP
  .debug_pubnames
                 0x0000044a       0x22 ./osal/osal.o
  .debug_pubnames
-                0x0000046c       0x72 ./FreeRTOS-Source/list.o
+                0x0000046c      0x12a ./cmds/cmd.o
  .debug_pubnames
-                0x000004de      0x256 ./FreeRTOS-Source/queue.o
+                0x00000596       0x72 ./FreeRTOS-Source/list.o
  .debug_pubnames
-                0x00000734      0x487 ./FreeRTOS-Source/tasks.o
+                0x00000608      0x256 ./FreeRTOS-Source/queue.o
  .debug_pubnames
-                0x00000bbb      0x138 ./FreeRTOS-Source/timers.o
+                0x0000085e      0x487 ./FreeRTOS-Source/tasks.o
  .debug_pubnames
-                0x00000cf3       0x88 ./FreeRTOS-Source/portable/MemMang/heap_4.o
+                0x00000ce5      0x138 ./FreeRTOS-Source/timers.o
  .debug_pubnames
-                0x00000d7b       0xfe ./FreeRTOS-Source/portable/GCC/ARM_CM3/port.o
+                0x00000e1d       0x88 ./FreeRTOS-Source/portable/MemMang/heap_4.o
  .debug_pubnames
-                0x00000e79      0x3aa ./Demo_Tasks/demo_tasks.o
+                0x00000ea5       0xfe ./FreeRTOS-Source/portable/GCC/ARM_CM3/port.o
  .debug_pubnames
-                0x00001223       0x22 ./Blinky-Demo/main_blinky.o
+                0x00000fa3      0x3cf ./Demo_Tasks/demo_tasks.o
  .debug_pubnames
-                0x00001245       0xeb C:/Users/S-SPACE/Desktop/Pratik/FreeRTOS/FreeRTOS_SC_v3.5/FSW_FreeRTOS/CORTEX_SmartFusion2_M2S050_SoftConsole/RTOSDemo_Hardware_Platform/Debug/CMSIS/startup_gcc/newlib_stubs.o
+                0x00001372       0x22 ./Blinky-Demo/main_blinky.o
  .debug_pubnames
-                0x00001330      0x50f C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(mss_uart.o)
+                0x00001394       0xeb C:/Users/S-SPACE/Desktop/Pratik/FreeRTOS/FreeRTOS_SC_v3.5/FSW_FreeRTOS/CORTEX_SmartFusion2_M2S050_SoftConsole/RTOSDemo_Hardware_Platform/Debug/CMSIS/startup_gcc/newlib_stubs.o
  .debug_pubnames
-                0x0000183f      0x2b9 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(core_i2c.o)
+                0x0000147f      0x50f C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(mss_uart.o)
  .debug_pubnames
-                0x00001af8       0x39 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(i2c_interrupt.o)
+                0x0000198e      0x2b9 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(core_i2c.o)
  .debug_pubnames
-                0x00001b31       0xcb C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(system_m2sxxx.o)
+                0x00001c47       0x39 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(i2c_interrupt.o)
+ .debug_pubnames
+                0x00001c80       0xcb C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(system_m2sxxx.o)
 
-.debug_info     0x00000000     0xda80
+.debug_info     0x00000000     0xe2b6
  *(.debug_info .gnu.linkonce.wi.*)
  .debug_info    0x00000000       0xf2 ./RunTimeStatsTimer.o
  .debug_info    0x000000f2      0x565 ./main.o
@@ -1463,21 +1507,22 @@ END GROUP
  .debug_info    0x00001de2      0x755 ./pilot/read.o
  .debug_info    0x00002537      0x634 ./pilot/write.o
  .debug_info    0x00002b6b       0xd1 ./osal/osal.o
- .debug_info    0x00002c3c      0x2c0 ./FreeRTOS-Source/list.o
- .debug_info    0x00002efc     0x135d ./FreeRTOS-Source/queue.o
- .debug_info    0x00004259     0x2038 ./FreeRTOS-Source/tasks.o
- .debug_info    0x00006291      0xd8a ./FreeRTOS-Source/timers.o
- .debug_info    0x0000701b      0x3d8 ./FreeRTOS-Source/portable/MemMang/heap_4.o
- .debug_info    0x000073f3      0x4af ./FreeRTOS-Source/portable/GCC/ARM_CM3/port.o
- .debug_info    0x000078a2     0x19ec ./Demo_Tasks/demo_tasks.o
- .debug_info    0x0000928e      0x1a1 ./Blinky-Demo/main_blinky.o
- .debug_info    0x0000942f      0x6c3 C:/Users/S-SPACE/Desktop/Pratik/FreeRTOS/FreeRTOS_SC_v3.5/FSW_FreeRTOS/CORTEX_SmartFusion2_M2S050_SoftConsole/RTOSDemo_Hardware_Platform/Debug/CMSIS/startup_gcc/newlib_stubs.o
- .debug_info    0x00009af2     0x1ed4 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(mss_uart.o)
- .debug_info    0x0000b9c6      0xd0c C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(core_i2c.o)
- .debug_info    0x0000c6d2      0x7ce C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(i2c_interrupt.o)
- .debug_info    0x0000cea0      0xbe0 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(system_m2sxxx.o)
+ .debug_info    0x00002c3c      0x745 ./cmds/cmd.o
+ .debug_info    0x00003381      0x2c0 ./FreeRTOS-Source/list.o
+ .debug_info    0x00003641     0x135d ./FreeRTOS-Source/queue.o
+ .debug_info    0x0000499e     0x2038 ./FreeRTOS-Source/tasks.o
+ .debug_info    0x000069d6      0xd8a ./FreeRTOS-Source/timers.o
+ .debug_info    0x00007760      0x3d8 ./FreeRTOS-Source/portable/MemMang/heap_4.o
+ .debug_info    0x00007b38      0x4af ./FreeRTOS-Source/portable/GCC/ARM_CM3/port.o
+ .debug_info    0x00007fe7     0x1add ./Demo_Tasks/demo_tasks.o
+ .debug_info    0x00009ac4      0x1a1 ./Blinky-Demo/main_blinky.o
+ .debug_info    0x00009c65      0x6c3 C:/Users/S-SPACE/Desktop/Pratik/FreeRTOS/FreeRTOS_SC_v3.5/FSW_FreeRTOS/CORTEX_SmartFusion2_M2S050_SoftConsole/RTOSDemo_Hardware_Platform/Debug/CMSIS/startup_gcc/newlib_stubs.o
+ .debug_info    0x0000a328     0x1ed4 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(mss_uart.o)
+ .debug_info    0x0000c1fc      0xd0c C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(core_i2c.o)
+ .debug_info    0x0000cf08      0x7ce C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(i2c_interrupt.o)
+ .debug_info    0x0000d6d6      0xbe0 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(system_m2sxxx.o)
 
-.debug_abbrev   0x00000000     0x2173
+.debug_abbrev   0x00000000     0x234b
  *(.debug_abbrev)
  .debug_abbrev  0x00000000       0x92 ./RunTimeStatsTimer.o
  .debug_abbrev  0x00000092      0x1b8 ./main.o
@@ -1490,21 +1535,22 @@ END GROUP
  .debug_abbrev  0x000007ef      0x1a8 ./pilot/read.o
  .debug_abbrev  0x00000997      0x172 ./pilot/write.o
  .debug_abbrev  0x00000b09       0x77 ./osal/osal.o
- .debug_abbrev  0x00000b80       0xc5 ./FreeRTOS-Source/list.o
- .debug_abbrev  0x00000c45      0x1d2 ./FreeRTOS-Source/queue.o
- .debug_abbrev  0x00000e17      0x252 ./FreeRTOS-Source/tasks.o
- .debug_abbrev  0x00001069      0x1a9 ./FreeRTOS-Source/timers.o
- .debug_abbrev  0x00001212      0x1b7 ./FreeRTOS-Source/portable/MemMang/heap_4.o
- .debug_abbrev  0x000013c9      0x1f7 ./FreeRTOS-Source/portable/GCC/ARM_CM3/port.o
- .debug_abbrev  0x000015c0      0x2b5 ./Demo_Tasks/demo_tasks.o
- .debug_abbrev  0x00001875       0xd9 ./Blinky-Demo/main_blinky.o
- .debug_abbrev  0x0000194e      0x158 C:/Users/S-SPACE/Desktop/Pratik/FreeRTOS/FreeRTOS_SC_v3.5/FSW_FreeRTOS/CORTEX_SmartFusion2_M2S050_SoftConsole/RTOSDemo_Hardware_Platform/Debug/CMSIS/startup_gcc/newlib_stubs.o
- .debug_abbrev  0x00001aa6      0x280 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(mss_uart.o)
- .debug_abbrev  0x00001d26      0x185 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(core_i2c.o)
- .debug_abbrev  0x00001eab      0x169 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(i2c_interrupt.o)
- .debug_abbrev  0x00002014      0x15f C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(system_m2sxxx.o)
+ .debug_abbrev  0x00000b80      0x1d8 ./cmds/cmd.o
+ .debug_abbrev  0x00000d58       0xc5 ./FreeRTOS-Source/list.o
+ .debug_abbrev  0x00000e1d      0x1d2 ./FreeRTOS-Source/queue.o
+ .debug_abbrev  0x00000fef      0x252 ./FreeRTOS-Source/tasks.o
+ .debug_abbrev  0x00001241      0x1a9 ./FreeRTOS-Source/timers.o
+ .debug_abbrev  0x000013ea      0x1b7 ./FreeRTOS-Source/portable/MemMang/heap_4.o
+ .debug_abbrev  0x000015a1      0x1f7 ./FreeRTOS-Source/portable/GCC/ARM_CM3/port.o
+ .debug_abbrev  0x00001798      0x2b5 ./Demo_Tasks/demo_tasks.o
+ .debug_abbrev  0x00001a4d       0xd9 ./Blinky-Demo/main_blinky.o
+ .debug_abbrev  0x00001b26      0x158 C:/Users/S-SPACE/Desktop/Pratik/FreeRTOS/FreeRTOS_SC_v3.5/FSW_FreeRTOS/CORTEX_SmartFusion2_M2S050_SoftConsole/RTOSDemo_Hardware_Platform/Debug/CMSIS/startup_gcc/newlib_stubs.o
+ .debug_abbrev  0x00001c7e      0x280 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(mss_uart.o)
+ .debug_abbrev  0x00001efe      0x185 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(core_i2c.o)
+ .debug_abbrev  0x00002083      0x169 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(i2c_interrupt.o)
+ .debug_abbrev  0x000021ec      0x15f C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(system_m2sxxx.o)
 
-.debug_line     0x00000000     0xf05e
+.debug_line     0x00000000    0x107ca
  *(.debug_line)
  .debug_line    0x00000000      0x389 ./RunTimeStatsTimer.o
  .debug_line    0x00000389     0x1644 ./main.o
@@ -1517,21 +1563,22 @@ END GROUP
  .debug_line    0x00005546     0x161e ./pilot/read.o
  .debug_line    0x00006b64     0x11e1 ./pilot/write.o
  .debug_line    0x00007d45      0x40f ./osal/osal.o
- .debug_line    0x00008154      0x589 ./FreeRTOS-Source/list.o
- .debug_line    0x000086dd      0xac2 ./FreeRTOS-Source/queue.o
- .debug_line    0x0000919f      0xf40 ./FreeRTOS-Source/tasks.o
- .debug_line    0x0000a0df      0x848 ./FreeRTOS-Source/timers.o
- .debug_line    0x0000a927      0x639 ./FreeRTOS-Source/portable/MemMang/heap_4.o
- .debug_line    0x0000af60      0x500 ./FreeRTOS-Source/portable/GCC/ARM_CM3/port.o
- .debug_line    0x0000b460     0x1898 ./Demo_Tasks/demo_tasks.o
- .debug_line    0x0000ccf8      0x5b2 ./Blinky-Demo/main_blinky.o
- .debug_line    0x0000d2aa      0x4aa C:/Users/S-SPACE/Desktop/Pratik/FreeRTOS/FreeRTOS_SC_v3.5/FSW_FreeRTOS/CORTEX_SmartFusion2_M2S050_SoftConsole/RTOSDemo_Hardware_Platform/Debug/CMSIS/startup_gcc/newlib_stubs.o
- .debug_line    0x0000d754      0x8f8 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(mss_uart.o)
- .debug_line    0x0000e04c      0x896 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(core_i2c.o)
- .debug_line    0x0000e8e2      0x53b C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(i2c_interrupt.o)
- .debug_line    0x0000ee1d      0x241 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(system_m2sxxx.o)
+ .debug_line    0x00008154     0x165e ./cmds/cmd.o
+ .debug_line    0x000097b2      0x589 ./FreeRTOS-Source/list.o
+ .debug_line    0x00009d3b      0xac2 ./FreeRTOS-Source/queue.o
+ .debug_line    0x0000a7fd      0xf40 ./FreeRTOS-Source/tasks.o
+ .debug_line    0x0000b73d      0x848 ./FreeRTOS-Source/timers.o
+ .debug_line    0x0000bf85      0x639 ./FreeRTOS-Source/portable/MemMang/heap_4.o
+ .debug_line    0x0000c5be      0x500 ./FreeRTOS-Source/portable/GCC/ARM_CM3/port.o
+ .debug_line    0x0000cabe     0x19a6 ./Demo_Tasks/demo_tasks.o
+ .debug_line    0x0000e464      0x5b2 ./Blinky-Demo/main_blinky.o
+ .debug_line    0x0000ea16      0x4aa C:/Users/S-SPACE/Desktop/Pratik/FreeRTOS/FreeRTOS_SC_v3.5/FSW_FreeRTOS/CORTEX_SmartFusion2_M2S050_SoftConsole/RTOSDemo_Hardware_Platform/Debug/CMSIS/startup_gcc/newlib_stubs.o
+ .debug_line    0x0000eec0      0x8f8 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(mss_uart.o)
+ .debug_line    0x0000f7b8      0x896 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(core_i2c.o)
+ .debug_line    0x0001004e      0x53b C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(i2c_interrupt.o)
+ .debug_line    0x00010589      0x241 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(system_m2sxxx.o)
 
-.debug_frame    0x00000000     0x262c
+.debug_frame    0x00000000     0x2700
  *(.debug_frame)
  .debug_frame   0x00000000       0x44 ./RunTimeStatsTimer.o
  .debug_frame   0x00000044       0xac ./main.o
@@ -1541,27 +1588,28 @@ END GROUP
  .debug_frame   0x000003c4       0x30 ./pilot/read.o
  .debug_frame   0x000003f4       0x30 ./pilot/write.o
  .debug_frame   0x00000424       0x30 ./osal/osal.o
- .debug_frame   0x00000454       0x9c ./FreeRTOS-Source/list.o
- .debug_frame   0x000004f0      0x398 ./FreeRTOS-Source/queue.o
- .debug_frame   0x00000888      0x724 ./FreeRTOS-Source/tasks.o
- .debug_frame   0x00000fac      0x2b8 ./FreeRTOS-Source/timers.o
- .debug_frame   0x00001264       0xd0 ./FreeRTOS-Source/portable/MemMang/heap_4.o
- .debug_frame   0x00001334      0x140 ./FreeRTOS-Source/portable/GCC/ARM_CM3/port.o
- .debug_frame   0x00001474      0x230 ./Demo_Tasks/demo_tasks.o
- .debug_frame   0x000016a4       0x70 ./Blinky-Demo/main_blinky.o
- .debug_frame   0x00001714      0x21c C:/Users/S-SPACE/Desktop/Pratik/FreeRTOS/FreeRTOS_SC_v3.5/FSW_FreeRTOS/CORTEX_SmartFusion2_M2S050_SoftConsole/RTOSDemo_Hardware_Platform/Debug/CMSIS/startup_gcc/newlib_stubs.o
- .debug_frame   0x00001930      0x6b4 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(mss_uart.o)
- .debug_frame   0x00001fe4      0x3e4 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(core_i2c.o)
- .debug_frame   0x000023c8       0x88 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(i2c_interrupt.o)
- .debug_frame   0x00002450       0xf4 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(system_m2sxxx.o)
- .debug_frame   0x00002544       0x20 c:/program files (x86)/microsemi/softconsole v3.4/sourcery-g++/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/lib/thumb2\libc.a(lib_a-errno.o)
- .debug_frame   0x00002564       0x2c c:/program files (x86)/microsemi/softconsole v3.4/sourcery-g++/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/lib/thumb2\libc.a(lib_a-init.o)
- .debug_frame   0x00002590       0x34 c:/program files (x86)/microsemi/softconsole v3.4/sourcery-g++/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/lib/thumb2\libc.a(lib_a-memcpy.o)
- .debug_frame   0x000025c4       0x28 c:/program files (x86)/microsemi/softconsole v3.4/sourcery-g++/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/lib/thumb2\libc.a(lib_a-memset.o)
- .debug_frame   0x000025ec       0x20 c:/program files (x86)/microsemi/softconsole v3.4/sourcery-g++/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/lib/thumb2\libc.a(lib_a-strcpy.o)
- .debug_frame   0x0000260c       0x20 c:/program files (x86)/microsemi/softconsole v3.4/sourcery-g++/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/lib/thumb2\libc.a(lib_a-strlen.o)
+ .debug_frame   0x00000454       0xd4 ./cmds/cmd.o
+ .debug_frame   0x00000528       0x9c ./FreeRTOS-Source/list.o
+ .debug_frame   0x000005c4      0x398 ./FreeRTOS-Source/queue.o
+ .debug_frame   0x0000095c      0x724 ./FreeRTOS-Source/tasks.o
+ .debug_frame   0x00001080      0x2b8 ./FreeRTOS-Source/timers.o
+ .debug_frame   0x00001338       0xd0 ./FreeRTOS-Source/portable/MemMang/heap_4.o
+ .debug_frame   0x00001408      0x140 ./FreeRTOS-Source/portable/GCC/ARM_CM3/port.o
+ .debug_frame   0x00001548      0x230 ./Demo_Tasks/demo_tasks.o
+ .debug_frame   0x00001778       0x70 ./Blinky-Demo/main_blinky.o
+ .debug_frame   0x000017e8      0x21c C:/Users/S-SPACE/Desktop/Pratik/FreeRTOS/FreeRTOS_SC_v3.5/FSW_FreeRTOS/CORTEX_SmartFusion2_M2S050_SoftConsole/RTOSDemo_Hardware_Platform/Debug/CMSIS/startup_gcc/newlib_stubs.o
+ .debug_frame   0x00001a04      0x6b4 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(mss_uart.o)
+ .debug_frame   0x000020b8      0x3e4 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(core_i2c.o)
+ .debug_frame   0x0000249c       0x88 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(i2c_interrupt.o)
+ .debug_frame   0x00002524       0xf4 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(system_m2sxxx.o)
+ .debug_frame   0x00002618       0x20 c:/program files (x86)/microsemi/softconsole v3.4/sourcery-g++/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/lib/thumb2\libc.a(lib_a-errno.o)
+ .debug_frame   0x00002638       0x2c c:/program files (x86)/microsemi/softconsole v3.4/sourcery-g++/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/lib/thumb2\libc.a(lib_a-init.o)
+ .debug_frame   0x00002664       0x34 c:/program files (x86)/microsemi/softconsole v3.4/sourcery-g++/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/lib/thumb2\libc.a(lib_a-memcpy.o)
+ .debug_frame   0x00002698       0x28 c:/program files (x86)/microsemi/softconsole v3.4/sourcery-g++/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/lib/thumb2\libc.a(lib_a-memset.o)
+ .debug_frame   0x000026c0       0x20 c:/program files (x86)/microsemi/softconsole v3.4/sourcery-g++/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/lib/thumb2\libc.a(lib_a-strcpy.o)
+ .debug_frame   0x000026e0       0x20 c:/program files (x86)/microsemi/softconsole v3.4/sourcery-g++/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/lib/thumb2\libc.a(lib_a-strlen.o)
 
-.debug_str      0x00000000     0x4a3d
+.debug_str      0x00000000     0x4b3c
  *(.debug_str)
  .debug_str     0x00000000      0x16b ./RunTimeStatsTimer.o
                                 0x19f (size before relaxing)
@@ -1585,34 +1633,36 @@ END GROUP
                                 0x69a (size before relaxing)
  .debug_str     0x00000a13       0x3b ./osal/osal.o
                                 0x15f (size before relaxing)
- .debug_str     0x00000a4e      0x143 ./FreeRTOS-Source/list.o
+ .debug_str     0x00000a4e       0xe9 ./cmds/cmd.o
+                                0x545 (size before relaxing)
+ .debug_str     0x00000b37      0x143 ./FreeRTOS-Source/list.o
                                 0x274 (size before relaxing)
- .debug_str     0x00000b91      0x51f ./FreeRTOS-Source/queue.o
+ .debug_str     0x00000c7a      0x51f ./FreeRTOS-Source/queue.o
                                 0x75c (size before relaxing)
- .debug_str     0x000010b0      0xc52 ./FreeRTOS-Source/tasks.o
+ .debug_str     0x00001199      0xc52 ./FreeRTOS-Source/tasks.o
                                 0xfa3 (size before relaxing)
- .debug_str     0x00001d02      0x4ed ./FreeRTOS-Source/timers.o
+ .debug_str     0x00001deb      0x4df ./FreeRTOS-Source/timers.o
                                 0x768 (size before relaxing)
- .debug_str     0x000021ef      0x1d7 ./FreeRTOS-Source/portable/MemMang/heap_4.o
+ .debug_str     0x000022ca      0x1d7 ./FreeRTOS-Source/portable/MemMang/heap_4.o
                                 0x334 (size before relaxing)
- .debug_str     0x000023c6      0x1e0 ./FreeRTOS-Source/portable/GCC/ARM_CM3/port.o
+ .debug_str     0x000024a1      0x1e0 ./FreeRTOS-Source/portable/GCC/ARM_CM3/port.o
                                 0x39d (size before relaxing)
- .debug_str     0x000025a6      0xadd ./Demo_Tasks/demo_tasks.o
-                               0x133e (size before relaxing)
- .debug_str     0x00003083       0x7a ./Blinky-Demo/main_blinky.o
+ .debug_str     0x00002681      0xb06 ./Demo_Tasks/demo_tasks.o
+                               0x13bd (size before relaxing)
+ .debug_str     0x00003187       0x7a ./Blinky-Demo/main_blinky.o
                                 0x1e1 (size before relaxing)
- .debug_str     0x000030fd      0x269 C:/Users/S-SPACE/Desktop/Pratik/FreeRTOS/FreeRTOS_SC_v3.5/FSW_FreeRTOS/CORTEX_SmartFusion2_M2S050_SoftConsole/RTOSDemo_Hardware_Platform/Debug/CMSIS/startup_gcc/newlib_stubs.o
+ .debug_str     0x00003201      0x264 C:/Users/S-SPACE/Desktop/Pratik/FreeRTOS/FreeRTOS_SC_v3.5/FSW_FreeRTOS/CORTEX_SmartFusion2_M2S050_SoftConsole/RTOSDemo_Hardware_Platform/Debug/CMSIS/startup_gcc/newlib_stubs.o
                                 0x342 (size before relaxing)
- .debug_str     0x00003366     0x107a C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(mss_uart.o)
+ .debug_str     0x00003465     0x107a C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(mss_uart.o)
                                0x19bb (size before relaxing)
- .debug_str     0x000043e0      0x477 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(core_i2c.o)
+ .debug_str     0x000044df      0x477 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(core_i2c.o)
                                 0x960 (size before relaxing)
- .debug_str     0x00004857       0x42 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(i2c_interrupt.o)
+ .debug_str     0x00004956       0x42 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(i2c_interrupt.o)
                                 0x9e2 (size before relaxing)
- .debug_str     0x00004899      0x1a4 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(system_m2sxxx.o)
+ .debug_str     0x00004998      0x1a4 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(system_m2sxxx.o)
                                 0xa56 (size before relaxing)
 
-.debug_loc      0x00000000     0x3f3d
+.debug_loc      0x00000000     0x40b2
  *(.debug_loc)
  .debug_loc     0x00000000       0x62 ./RunTimeStatsTimer.o
  .debug_loc     0x00000062      0x11a ./main.o
@@ -1622,21 +1672,22 @@ END GROUP
  .debug_loc     0x000005f3       0x37 ./pilot/read.o
  .debug_loc     0x0000062a       0x37 ./pilot/write.o
  .debug_loc     0x00000661       0x37 ./osal/osal.o
- .debug_loc     0x00000698      0x113 ./FreeRTOS-Source/list.o
- .debug_loc     0x000007ab      0x645 ./FreeRTOS-Source/queue.o
- .debug_loc     0x00000df0      0xc7f ./FreeRTOS-Source/tasks.o
- .debug_loc     0x00001a6f      0x4af ./FreeRTOS-Source/timers.o
- .debug_loc     0x00001f1e      0x15d ./FreeRTOS-Source/portable/MemMang/heap_4.o
- .debug_loc     0x0000207b      0x1e3 ./FreeRTOS-Source/portable/GCC/ARM_CM3/port.o
- .debug_loc     0x0000225e      0x396 ./Demo_Tasks/demo_tasks.o
- .debug_loc     0x000025f4       0xa5 ./Blinky-Demo/main_blinky.o
- .debug_loc     0x00002699      0x3c6 C:/Users/S-SPACE/Desktop/Pratik/FreeRTOS/FreeRTOS_SC_v3.5/FSW_FreeRTOS/CORTEX_SmartFusion2_M2S050_SoftConsole/RTOSDemo_Hardware_Platform/Debug/CMSIS/startup_gcc/newlib_stubs.o
- .debug_loc     0x00002a5f      0xbb9 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(mss_uart.o)
- .debug_loc     0x00003618      0x6a9 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(core_i2c.o)
- .debug_loc     0x00003cc1       0xdc C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(i2c_interrupt.o)
- .debug_loc     0x00003d9d      0x1a0 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(system_m2sxxx.o)
+ .debug_loc     0x00000698      0x175 ./cmds/cmd.o
+ .debug_loc     0x0000080d      0x113 ./FreeRTOS-Source/list.o
+ .debug_loc     0x00000920      0x645 ./FreeRTOS-Source/queue.o
+ .debug_loc     0x00000f65      0xc7f ./FreeRTOS-Source/tasks.o
+ .debug_loc     0x00001be4      0x4af ./FreeRTOS-Source/timers.o
+ .debug_loc     0x00002093      0x15d ./FreeRTOS-Source/portable/MemMang/heap_4.o
+ .debug_loc     0x000021f0      0x1e3 ./FreeRTOS-Source/portable/GCC/ARM_CM3/port.o
+ .debug_loc     0x000023d3      0x396 ./Demo_Tasks/demo_tasks.o
+ .debug_loc     0x00002769       0xa5 ./Blinky-Demo/main_blinky.o
+ .debug_loc     0x0000280e      0x3c6 C:/Users/S-SPACE/Desktop/Pratik/FreeRTOS/FreeRTOS_SC_v3.5/FSW_FreeRTOS/CORTEX_SmartFusion2_M2S050_SoftConsole/RTOSDemo_Hardware_Platform/Debug/CMSIS/startup_gcc/newlib_stubs.o
+ .debug_loc     0x00002bd4      0xbb9 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(mss_uart.o)
+ .debug_loc     0x0000378d      0x6a9 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(core_i2c.o)
+ .debug_loc     0x00003e36       0xdc C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(i2c_interrupt.o)
+ .debug_loc     0x00003f12      0x1a0 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(system_m2sxxx.o)
 
-.debug_macinfo  0x00000000    0xb3013
+.debug_macinfo  0x00000000    0xc02f1
  *(.debug_macinfo)
  .debug_macinfo
                 0x00000000     0x4745 ./RunTimeStatsTimer.o
@@ -1661,31 +1712,33 @@ END GROUP
  .debug_macinfo
                 0x000491e6     0x5348 ./osal/osal.o
  .debug_macinfo
-                0x0004e52e     0x699e ./FreeRTOS-Source/list.o
+                0x0004e52e     0xd261 ./cmds/cmd.o
  .debug_macinfo
-                0x00054ecc     0x7af7 ./FreeRTOS-Source/queue.o
+                0x0005b78f     0x699e ./FreeRTOS-Source/list.o
  .debug_macinfo
-                0x0005c9c3     0x8e0f ./FreeRTOS-Source/tasks.o
+                0x0006212d     0x7af7 ./FreeRTOS-Source/queue.o
  .debug_macinfo
-                0x000657d2     0x8022 ./FreeRTOS-Source/timers.o
+                0x00069c24     0x8e0f ./FreeRTOS-Source/tasks.o
  .debug_macinfo
-                0x0006d7f4     0x703b ./FreeRTOS-Source/portable/MemMang/heap_4.o
+                0x00072a33     0x8022 ./FreeRTOS-Source/timers.o
  .debug_macinfo
-                0x0007482f     0x589b ./FreeRTOS-Source/portable/GCC/ARM_CM3/port.o
+                0x0007aa55     0x703b ./FreeRTOS-Source/portable/MemMang/heap_4.o
  .debug_macinfo
-                0x0007a0ca    0x10734 ./Demo_Tasks/demo_tasks.o
+                0x00081a90     0x589b ./FreeRTOS-Source/portable/GCC/ARM_CM3/port.o
  .debug_macinfo
-                0x0008a7fe     0x8a73 ./Blinky-Demo/main_blinky.o
+                0x0008732b    0x107b1 ./Demo_Tasks/demo_tasks.o
  .debug_macinfo
-                0x00093271     0x4bf0 C:/Users/S-SPACE/Desktop/Pratik/FreeRTOS/FreeRTOS_SC_v3.5/FSW_FreeRTOS/CORTEX_SmartFusion2_M2S050_SoftConsole/RTOSDemo_Hardware_Platform/Debug/CMSIS/startup_gcc/newlib_stubs.o
+                0x00097adc     0x8a73 ./Blinky-Demo/main_blinky.o
  .debug_macinfo
-                0x00097e61     0x80de C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(mss_uart.o)
+                0x000a054f     0x4bf0 C:/Users/S-SPACE/Desktop/Pratik/FreeRTOS/FreeRTOS_SC_v3.5/FSW_FreeRTOS/CORTEX_SmartFusion2_M2S050_SoftConsole/RTOSDemo_Hardware_Platform/Debug/CMSIS/startup_gcc/newlib_stubs.o
  .debug_macinfo
-                0x0009ff3f     0x44f1 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(core_i2c.o)
+                0x000a513f     0x80de C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(mss_uart.o)
  .debug_macinfo
-                0x000a4430     0x7939 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(i2c_interrupt.o)
+                0x000ad21d     0x44f1 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(core_i2c.o)
  .debug_macinfo
-                0x000abd69     0x72aa C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(system_m2sxxx.o)
+                0x000b170e     0x7939 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(i2c_interrupt.o)
+ .debug_macinfo
+                0x000b9047     0x72aa C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(system_m2sxxx.o)
 
 .debug_weaknames
  *(.debug_weaknames)
@@ -1732,62 +1785,64 @@ END GROUP
  .ARM.attributes
                 0x0000022c       0x31 ./osal/osal.o
  .ARM.attributes
-                0x0000025d       0x31 ./FreeRTOS-Source/list.o
+                0x0000025d       0x31 ./cmds/cmd.o
  .ARM.attributes
-                0x0000028e       0x31 ./FreeRTOS-Source/queue.o
+                0x0000028e       0x31 ./FreeRTOS-Source/list.o
  .ARM.attributes
-                0x000002bf       0x31 ./FreeRTOS-Source/tasks.o
+                0x000002bf       0x31 ./FreeRTOS-Source/queue.o
  .ARM.attributes
-                0x000002f0       0x31 ./FreeRTOS-Source/timers.o
+                0x000002f0       0x31 ./FreeRTOS-Source/tasks.o
  .ARM.attributes
-                0x00000321       0x31 ./FreeRTOS-Source/portable/MemMang/heap_4.o
+                0x00000321       0x31 ./FreeRTOS-Source/timers.o
  .ARM.attributes
-                0x00000352       0x31 ./FreeRTOS-Source/portable/GCC/ARM_CM3/port.o
+                0x00000352       0x31 ./FreeRTOS-Source/portable/MemMang/heap_4.o
  .ARM.attributes
-                0x00000383       0x31 ./Demo_Tasks/demo_tasks.o
+                0x00000383       0x31 ./FreeRTOS-Source/portable/GCC/ARM_CM3/port.o
  .ARM.attributes
-                0x000003b4       0x31 ./Blinky-Demo/main_blinky.o
+                0x000003b4       0x31 ./Demo_Tasks/demo_tasks.o
  .ARM.attributes
-                0x000003e5       0x21 C:/Users/S-SPACE/Desktop/Pratik/FreeRTOS/FreeRTOS_SC_v3.5/FSW_FreeRTOS/CORTEX_SmartFusion2_M2S050_SoftConsole/RTOSDemo_Hardware_Platform/Debug/CMSIS/startup_gcc/startup_m2sxxx.o
+                0x000003e5       0x31 ./Blinky-Demo/main_blinky.o
  .ARM.attributes
-                0x00000406       0x31 C:/Users/S-SPACE/Desktop/Pratik/FreeRTOS/FreeRTOS_SC_v3.5/FSW_FreeRTOS/CORTEX_SmartFusion2_M2S050_SoftConsole/RTOSDemo_Hardware_Platform/Debug/CMSIS/startup_gcc/newlib_stubs.o
+                0x00000416       0x21 C:/Users/S-SPACE/Desktop/Pratik/FreeRTOS/FreeRTOS_SC_v3.5/FSW_FreeRTOS/CORTEX_SmartFusion2_M2S050_SoftConsole/RTOSDemo_Hardware_Platform/Debug/CMSIS/startup_gcc/startup_m2sxxx.o
  .ARM.attributes
-                0x00000437       0x31 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(mss_uart.o)
+                0x00000437       0x31 C:/Users/S-SPACE/Desktop/Pratik/FreeRTOS/FreeRTOS_SC_v3.5/FSW_FreeRTOS/CORTEX_SmartFusion2_M2S050_SoftConsole/RTOSDemo_Hardware_Platform/Debug/CMSIS/startup_gcc/newlib_stubs.o
  .ARM.attributes
-                0x00000468       0x31 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(core_i2c.o)
+                0x00000468       0x31 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(mss_uart.o)
  .ARM.attributes
-                0x00000499       0x31 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(i2c_interrupt.o)
+                0x00000499       0x31 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(core_i2c.o)
  .ARM.attributes
-                0x000004ca       0x31 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(system_m2sxxx.o)
+                0x000004ca       0x31 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(i2c_interrupt.o)
  .ARM.attributes
-                0x000004fb       0x21 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(hal.o)
+                0x000004fb       0x31 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(system_m2sxxx.o)
  .ARM.attributes
-                0x0000051c       0x21 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(hw_reg_access.o)
+                0x0000052c       0x21 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(hal.o)
  .ARM.attributes
-                0x0000053d       0x29 c:/program files (x86)/microsemi/softconsole v3.4/sourcery-g++/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/lib/thumb2\libc.a(lib_a-errno.o)
+                0x0000054d       0x21 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(hw_reg_access.o)
  .ARM.attributes
-                0x00000566       0x29 c:/program files (x86)/microsemi/softconsole v3.4/sourcery-g++/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/lib/thumb2\libc.a(lib_a-impure.o)
+                0x0000056e       0x29 c:/program files (x86)/microsemi/softconsole v3.4/sourcery-g++/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/lib/thumb2\libc.a(lib_a-errno.o)
  .ARM.attributes
-                0x0000058f       0x29 c:/program files (x86)/microsemi/softconsole v3.4/sourcery-g++/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/lib/thumb2\libc.a(lib_a-init.o)
+                0x00000597       0x29 c:/program files (x86)/microsemi/softconsole v3.4/sourcery-g++/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/lib/thumb2\libc.a(lib_a-impure.o)
  .ARM.attributes
-                0x000005b8       0x29 c:/program files (x86)/microsemi/softconsole v3.4/sourcery-g++/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/lib/thumb2\libc.a(lib_a-memcpy.o)
+                0x000005c0       0x29 c:/program files (x86)/microsemi/softconsole v3.4/sourcery-g++/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/lib/thumb2\libc.a(lib_a-init.o)
  .ARM.attributes
-                0x000005e1       0x29 c:/program files (x86)/microsemi/softconsole v3.4/sourcery-g++/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/lib/thumb2\libc.a(lib_a-memset.o)
+                0x000005e9       0x29 c:/program files (x86)/microsemi/softconsole v3.4/sourcery-g++/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/lib/thumb2\libc.a(lib_a-memcpy.o)
  .ARM.attributes
-                0x0000060a       0x29 c:/program files (x86)/microsemi/softconsole v3.4/sourcery-g++/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/lib/thumb2\libc.a(lib_a-strcpy.o)
+                0x00000612       0x29 c:/program files (x86)/microsemi/softconsole v3.4/sourcery-g++/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/lib/thumb2\libc.a(lib_a-memset.o)
  .ARM.attributes
-                0x00000633       0x29 c:/program files (x86)/microsemi/softconsole v3.4/sourcery-g++/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/lib/thumb2\libc.a(lib_a-strlen.o)
+                0x0000063b       0x29 c:/program files (x86)/microsemi/softconsole v3.4/sourcery-g++/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/lib/thumb2\libc.a(lib_a-strcpy.o)
  .ARM.attributes
-                0x0000065c       0x29 c:/program files (x86)/microsemi/softconsole v3.4/sourcery-g++/bin/../lib/gcc/arm-none-eabi/4.4.1/thumb2/crtend.o
+                0x00000664       0x29 c:/program files (x86)/microsemi/softconsole v3.4/sourcery-g++/bin/../lib/gcc/arm-none-eabi/4.4.1/../../../../arm-none-eabi/lib/thumb2\libc.a(lib_a-strlen.o)
  .ARM.attributes
-                0x00000685       0x19 c:/program files (x86)/microsemi/softconsole v3.4/sourcery-g++/bin/../lib/gcc/arm-none-eabi/4.4.1/thumb2/crtn.o
+                0x0000068d       0x29 c:/program files (x86)/microsemi/softconsole v3.4/sourcery-g++/bin/../lib/gcc/arm-none-eabi/4.4.1/thumb2/crtend.o
+ .ARM.attributes
+                0x000006b6       0x19 c:/program files (x86)/microsemi/softconsole v3.4/sourcery-g++/bin/../lib/gcc/arm-none-eabi/4.4.1/thumb2/crtn.o
 
 /DISCARD/
  *(.note.GNU-stack)
  *(.isr_vector)
 OUTPUT(RTOSDemo elf32-littlearm)
 
-.debug_ranges   0x00000000      0xb08
+.debug_ranges   0x00000000      0xb50
  .debug_ranges  0x00000000       0x20 ./RunTimeStatsTimer.o
  .debug_ranges  0x00000020       0x40 ./main.o
  .debug_ranges  0x00000060       0x50 ./printf-stdarg.o
@@ -1796,16 +1851,17 @@ OUTPUT(RTOSDemo elf32-littlearm)
  .debug_ranges  0x00000130       0x18 ./pilot/read.o
  .debug_ranges  0x00000148       0x18 ./pilot/write.o
  .debug_ranges  0x00000160       0x18 ./osal/osal.o
- .debug_ranges  0x00000178       0x38 ./FreeRTOS-Source/list.o
- .debug_ranges  0x000001b0       0xf8 ./FreeRTOS-Source/queue.o
- .debug_ranges  0x000002a8      0x200 ./FreeRTOS-Source/tasks.o
- .debug_ranges  0x000004a8       0xc0 ./FreeRTOS-Source/timers.o
- .debug_ranges  0x00000568       0x48 ./FreeRTOS-Source/portable/MemMang/heap_4.o
- .debug_ranges  0x000005b0       0x70 ./FreeRTOS-Source/portable/GCC/ARM_CM3/port.o
- .debug_ranges  0x00000620       0xb8 ./Demo_Tasks/demo_tasks.o
- .debug_ranges  0x000006d8       0x28 ./Blinky-Demo/main_blinky.o
- .debug_ranges  0x00000700       0xa0 C:/Users/S-SPACE/Desktop/Pratik/FreeRTOS/FreeRTOS_SC_v3.5/FSW_FreeRTOS/CORTEX_SmartFusion2_M2S050_SoftConsole/RTOSDemo_Hardware_Platform/Debug/CMSIS/startup_gcc/newlib_stubs.o
- .debug_ranges  0x000007a0      0x1c8 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(mss_uart.o)
- .debug_ranges  0x00000968      0x120 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(core_i2c.o)
- .debug_ranges  0x00000a88       0x30 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(i2c_interrupt.o)
- .debug_ranges  0x00000ab8       0x50 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(system_m2sxxx.o)
+ .debug_ranges  0x00000178       0x48 ./cmds/cmd.o
+ .debug_ranges  0x000001c0       0x38 ./FreeRTOS-Source/list.o
+ .debug_ranges  0x000001f8       0xf8 ./FreeRTOS-Source/queue.o
+ .debug_ranges  0x000002f0      0x200 ./FreeRTOS-Source/tasks.o
+ .debug_ranges  0x000004f0       0xc0 ./FreeRTOS-Source/timers.o
+ .debug_ranges  0x000005b0       0x48 ./FreeRTOS-Source/portable/MemMang/heap_4.o
+ .debug_ranges  0x000005f8       0x70 ./FreeRTOS-Source/portable/GCC/ARM_CM3/port.o
+ .debug_ranges  0x00000668       0xb8 ./Demo_Tasks/demo_tasks.o
+ .debug_ranges  0x00000720       0x28 ./Blinky-Demo/main_blinky.o
+ .debug_ranges  0x00000748       0xa0 C:/Users/S-SPACE/Desktop/Pratik/FreeRTOS/FreeRTOS_SC_v3.5/FSW_FreeRTOS/CORTEX_SmartFusion2_M2S050_SoftConsole/RTOSDemo_Hardware_Platform/Debug/CMSIS/startup_gcc/newlib_stubs.o
+ .debug_ranges  0x000007e8      0x1c8 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(mss_uart.o)
+ .debug_ranges  0x000009b0      0x120 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(core_i2c.o)
+ .debug_ranges  0x00000ad0       0x30 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(i2c_interrupt.o)
+ .debug_ranges  0x00000b00       0x50 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug\libRTOSDemo_Hardware_Platform.a(system_m2sxxx.o)

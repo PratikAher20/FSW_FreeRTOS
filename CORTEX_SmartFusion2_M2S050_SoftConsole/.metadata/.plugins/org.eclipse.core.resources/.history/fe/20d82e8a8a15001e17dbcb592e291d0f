@@ -1,0 +1,4 @@
+#include "cmd.h"
+
+// Function checking the CheckSUM
+void chk_sum()

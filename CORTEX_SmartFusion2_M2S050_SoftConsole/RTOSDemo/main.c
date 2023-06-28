@@ -129,8 +129,8 @@ int main( void )
 
 //		demo();
 
-
 		demo_tasks();
+
 	}
 	#else
 
