@@ -46,9 +46,7 @@ size_t uart1_irq_size;
 #define DAC_ADDR 0x0E
 #define ADC_ADDR 0x21
 #define QUEUE_LENGTH 1
-#define NUM_PKTS 2
-#define SIZE_QUEUE sizeof(pkt_hk_t)
-#define SIZE_PLD_QUEUE sizeof(pkt_pld_t)
+#define NUM_PKTS 3
 
 char c[25];
 char argu[25];
