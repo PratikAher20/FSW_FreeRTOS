@@ -9,12 +9,12 @@
 #include "FreeRTOS-Source/include/queue.h"
 #include "semphr.h"
 #include "queue.h"
-#include "timers.h"
 #include "cmds/cmd.h"
+#include "stream/stream.h"
 
 static imu_t imu_struct = {IMU_ADDR, &g_core_i2c5, COREI2C_5_0, I2C_PCLK_DIV_256, 0x15, 0x16, {0x20, 0x60}, 0x28, 0x2A, 0x2C, 0x29, 0x2B, 0x2D, {0x10,0x6A}, 0x18, 0x1A, 0x1C, 0x19, 0x1B, 0x1D };
 static vc_sensor_t vc_struct = {DAC_ADDR, &g_core_i2c2, COREI2C_2_0, I2C_PCLK_DIV_256, {0,0}, {0,0}, {0,0}};
-uint16_t volatile command_cnt;
+uint16_t volatile command_cnt = 0;
 uint16_t volatile command_reject_cnt;
 
 i2c_instance_t g_core_i2c0;
@@ -24,8 +24,7 @@ i2c_instance_t g_core_i2c3;
 i2c_instance_t g_core_i2c4;
 i2c_instance_t g_core_i2c5;
 
-QueueHandle_t Data_HK_Queue;
-QueueHandle_t Data_PLD_Queue;
+QueueHandle_t Store_PKT_Queue;
 QueueHandle_t Data_PKT_Queue;
 
 BaseType_t hk_task_feed;
@@ -51,7 +50,6 @@ TaskHandle_t get_pld_pkt_handle;
 TaskHandle_t get_hk_pkt_handle;
 TaskHandle_t cmd_tsk;
 
-TimerHandle_t pkt_timer[NUM_PKTS];
 
 pkt_hk_t* hk_pkt;
 pkt_pld_t* pld_pkt;
@@ -117,7 +115,6 @@ void get_hk_data(void* d){
 			vTaskPrioritySet(get_pld_pkt_handle, uxPriority + 1);
 
 		}
-
 	}
 }
 
@@ -147,81 +144,71 @@ void get_pld_data(void* d1){
 
 void vGetPktStruct(pkt_name_t pktname, void* pktdata, uint8_t pktsize){
 
-	pkt_t pkt[NUM_PKTS];
-	pkt[pktname].pkt_type = pktname;
-	pkt[pktname].pkt_data = pktdata;
-	pkt[pktname].pkt_size = pktsize;
+	pkt_t pkt;
 
-	xQueueSend(Data_PKT_Queue, pkt + pktname , 0);
+	pkt.pkt_type = pktname;
+	pkt.pkt_data = pktdata;
+	pkt.pkt_size = pktsize;
+
+//	xQueueSend(Data_PKT_Queue, &pkt, 0);
+
+	// Storing the packets
+	if(pkt_stream[pktname].rate != 0){
+		xQueueSend(Data_PKT_Queue, &pkt , 0);
+		vtlm_sender();
+	}
+	else{
+		xQueueSend(Store_PKT_Queue, &pkt, 0);
+	}
 
 }
 
-void vtlm_task(void* d){
-	uint16_t seq_num=0;
+void vtlm_task(TimerHandle_t exp_timer){
+	uint16_t seq_num=0;  // Try to generalised this timer callback function. Also combine the tlm_task and the tlm_sender task.
+	uint16_t* t_id;
+	t_id = (uint16_t*) pvTimerGetTimerID(exp_timer);
 
-//	Data_Queue = (QueueHandle_t) data;
+	if(t_id == 0){
+		hk_pkt->ccsds_p1 = PILOT_REVERSE_BYTE_ORDER(((ccsds_p1(tlm_pkt_type, HK_API_ID))));
+		hk_pkt->ccsds_p2 = PILOT_REVERSE_BYTE_ORDER(((ccsds_p2(++seq_num))));
+		hk_pkt->ccsds_p3 = PILOT_REVERSE_BYTE_ORDER(((ccsds_p3(HK_PKT_LENGTH))));
+		hk_pkt->ccsds_s1 = 0;
+		hk_pkt->ccsds_s2 = 0;
 
-//	xQueueReceive(Data_Queue, data, 10);
+		vGetPktStruct( hk, (void*) hk_pkt, HK_PKT_LENGTH);
+	}
+	if(t_id == 1){
+		pld_pkt->ccsds_p1 = PILOT_REVERSE_BYTE_ORDER(((ccsds_p1(tlm_pkt_type, PLD_API_ID))));
+		pld_pkt->ccsds_p2 = PILOT_REVERSE_BYTE_ORDER(((ccsds_p2(++seq_num))));
+		pld_pkt->ccsds_p3 = PILOT_REVERSE_BYTE_ORDER(((ccsds_p3(PLD_PKT_LENGTH))));
 
-//	if(feed_tlm_task != pdFAIL){
-//		ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
-		if(data[511] == HK_API_ID){
-//			while(1){
-				hk_pkt->ccsds_p1 = PILOT_REVERSE_BYTE_ORDER(((ccsds_p1(tlm_pkt_type, HK_API_ID))));
-				hk_pkt->ccsds_p2 = PILOT_REVERSE_BYTE_ORDER(((ccsds_p2(++seq_num))));
-				hk_pkt->ccsds_p3 = PILOT_REVERSE_BYTE_ORDER(((ccsds_p3(HK_PKT_LENGTH))));
-				hk_pkt->ccsds_s1 = 0;
-				hk_pkt->ccsds_s2 = 0;
+		pld_pkt->ccsds_s1 = 0;
+		pld_pkt->ccsds_s2 = 0;
 
-//				xTaskNotifyGive(tlm_sender_handle);
-				vGetPktStruct( hk, (void*) hk_pkt, HK_PKT_LENGTH);
+		vGetPktStruct(pld, (void* )pld_pkt, PLD_PKT_LENGTH);
+	}
+	else{
 
-//			}
-		}
-
-
-		if(data_pld[49] == PLD_API_ID){
-//			while(1){
-
-				pld_pkt->ccsds_p1 = PILOT_REVERSE_BYTE_ORDER(((ccsds_p1(tlm_pkt_type, PLD_API_ID))));
-				pld_pkt->ccsds_p2 = PILOT_REVERSE_BYTE_ORDER(((ccsds_p2(++seq_num))));
-				pld_pkt->ccsds_p3 = PILOT_REVERSE_BYTE_ORDER(((ccsds_p3(PLD_PKT_LENGTH))));
-
-				pld_pkt->ccsds_s1 = 0;
-				pld_pkt->ccsds_s2 = 0;
-
-//				xTaskNotifyGive(tlm_sender_handle);
-				vGetPktStruct(pld, (void* )pld_pkt, PLD_PKT_LENGTH);
-//			}
-		}
-
-		else{
-
-		}
-//	}
-
+	}
 }
 
 
 void vtlm_sender(void* d){
+	// Use this function only as timer callback which will call function that will send the packet according to its rate.
 
 	pkt_t pkt_send;
 
-		if(data[511] == HK_API_ID){
-//			while(1){
-			xQueueReceive(Data_PKT_Queue, &pkt_send, portMAX_DELAY);
+//	pkt_stream(pkt_send);
 
-//				MSS_UART_polled_tx(&g_mss_uart0, Data_HK_Queue, sizeof(pkt_hk_t));
-			MSS_UART_polled_tx(&g_mss_uart0, pkt_send.pkt_data, pkt_send.pkt_size);
+	xQueueReceive(Data_PKT_Queue, &pkt_send, portMAX_DELAY);
 
-		}
-		if(data_pld[49] == PLD_API_ID){
+	MSS_UART_polled_tx(&g_mss_uart0, pkt_send.pkt_data, pkt_send.pkt_size);
 
-			xQueueReceive(Data_PKT_Queue, &pkt_send, portMAX_DELAY);
+//	xQueueReceive(Data_PKT_Queue, &pkt_send, portMAX_DELAY);
+//
+//
+//	MSS_UART_polled_tx(&g_mss_uart0, pkt_send.pkt_data, pkt_send.pkt_size);
 
-//			MSS_UART_polled_tx(&g_mss_uart0, Data_PLD_Queue , sizeof(pkt_pld_t));
-			MSS_UART_polled_tx(&g_mss_uart0, pkt_send.pkt_data, pkt_send.pkt_size);
-		}
 
 }
 
@@ -357,26 +344,6 @@ void write_DAC(void* nu){
 
 }
 
-//void uart_irq_function_tsk(){
-//
-//	while(1){
-//		vTaskSuspend(NULL);
-//
-//		if(uart0_irq_rx_buffer[0] == 127){
-//				c[command_index] = '\0';
-//				c[command_index - 1] = 127;
-//				MSS_UART_polled_tx(&g_mss_uart0, &c[command_index - 1], 1);
-//				command_index = command_index - 1;
-//			}
-//			else{
-//				c[command_index] =  uart0_irq_rx_buffer[0];
-//				MSS_UART_polled_tx(&g_mss_uart0, &c[command_index], 1);
-//				command_index = command_index + 1;
-//			}
-//	}
-//
-//}
-
 
 void irq_tsk_func(void* f_param){
 
@@ -472,7 +439,11 @@ void demo_tasks(void){
 		vc_ptr->init = &init;
 		vc_ptr->init(vc_sensor, (void* )vc_dev);
 
-		Data_PKT_Queue = xQueueCreate(NUM_PKTS, sizeof(pkt_t));
+		Data_PKT_Queue = xQueueCreate(QUEUE_SIZE, sizeof(pkt_t));  //Common queue for all packets data storage
+		Store_PKT_Queue = xQueueCreate(QUEUE_SIZE, sizeof(pkt_t)); // Queue from which the data will be stored to the storage
+
+		set_pktRate(hk, HK_PKT_PERIOD);   //Set all the default packet rate
+		set_pktRate(pld, PLD_PKT_PERIOD);
 
 //		I2C_write(VC_SENSOR_I2C, DAC_ADDR, sw_clear, 3, I2C_RELEASE_BUS);
 //		status = I2C_wait_complete(VC_SENSOR_I2C, I2C_NO_TIMEOUT);
@@ -537,13 +508,20 @@ void demo_tasks(void){
 		xTaskCreate(irq_tsk_func, "uart_irq", configMINIMAL_STACK_SIZE, (void* )uart0_irq_rx_buffer, 3, &uart_irq);
 
 //		feed_cmd_tsk = xTaskCreate(pro_cmd_tsk, "Command", configMINIMAL_STACK_SIZE, NULL, 2, &cmd_tsk);
+		uint8_t i;
+		for(i=0; i<NUM_PKTS; i++){
 
-		pkt_timer[0] = xTimerCreate("TLM_Task_Timer", pdMS_TO_TICKS(5000),pdTRUE, (void* )0, vtlm_task);
-		xTimerStart(pkt_timer[0], 0);
+			pkt_timer[i] = xTimerCreate("PKT_Timer", xMsToTicks(pkt_stream[i].rate),pdTRUE, (void* )0, vtlm_task);
+			vTimerSetTimerID(pkt_timer[i], (void* )i);
+			xTimerStart(pkt_timer[i], 0);
 
-		pkt_timer[1] = xTimerCreate("Sender_Timer", pdMS_TO_TICKS(5005), pdTRUE, (void* )0, vtlm_sender);
-		xTimerStart(pkt_timer[1], 0);
+		}
 
+//		pkt_timer[0] = xTimerCreate("TLM_Task_Timer", pdMS_TO_TICKS(5000),pdTRUE, (void* )0, vtlm_task);
+//		xTimerStart(pkt_timer[0], 0);
+
+//		pkt_timer[1] = xTimerCreate("Sender_Timer", pdMS_TO_TICKS(5005), pdTRUE, (void* )0, vtlm_sender);
+//		xTimerStart(pkt_timer[1], 0);
 
 //		feed_tlm_task = xTaskCreate(tlm_task, "Telemetry", configMINIMAL_STACK_SIZE, (void*) data, 1, &tlm_tsk_handle);
 //		feed_tlm_sender = xTaskCreate(tlm_sender, "TLM_Data_Sender", configMINIMAL_STACK_SIZE, (void*) data, 1, &tlm_sender_handle);

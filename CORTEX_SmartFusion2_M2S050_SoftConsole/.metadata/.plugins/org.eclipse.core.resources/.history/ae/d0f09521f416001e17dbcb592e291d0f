@@ -1,0 +1,14 @@
+
+#include "stream.h"
+
+stream_t pkt_stream[NUM_PKTS];
+
+void set_pktRate(stream_t ps){
+
+
+}
+
+void pkt_stream(pkt_t p){
+
+
+}

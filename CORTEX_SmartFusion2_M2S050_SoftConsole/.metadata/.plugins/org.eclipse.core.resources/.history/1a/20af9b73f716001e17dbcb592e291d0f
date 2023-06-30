@@ -1,0 +1,16 @@
+
+#include "stream.h"
+#include "Demo_Tasks/demo_tasks.h"
+
+stream_t pkt_stream[NUM_PKTS];
+
+void set_pktRate(uint16_t sr){
+
+	pkt_stream[ps.pkt_type.pkt_type].rate = sr;
+
+}
+
+void pkt_stream(pkt_t p){
+
+
+}

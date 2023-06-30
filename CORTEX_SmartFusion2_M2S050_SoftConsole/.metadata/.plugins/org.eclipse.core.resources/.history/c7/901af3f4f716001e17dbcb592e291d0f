@@ -1,0 +1,17 @@
+
+#include "stream.h"
+#include "Demo_Tasks/demo_tasks.h"
+
+stream_t pkt_stream[NUM_PKTS];
+
+void set_pktRate(stream_t ps, uint16_t sr){
+
+	pkt_stream[ps.pkt_type.pkt_type].rate = sr;
+
+}
+
+void pkt_stream(stream_t ps){
+
+	MSS_UART_polled_tx(&g_mss_uart0, pkt_send.pkt_data, pkt_send.pkt_size);
+
+}

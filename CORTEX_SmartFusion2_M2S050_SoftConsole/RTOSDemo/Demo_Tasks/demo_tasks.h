@@ -21,6 +21,7 @@
 #include "pilot/get_data.h"
 #include "pilot/read.h"
 #include "pilot/write.h"
+#include "timers.h"
 
 //uint8_t prompt_msg[30] =  "\n\r RTOS_Testing :  \0" ;
 i2c_instance_t g_core_i2c2;
@@ -33,9 +34,11 @@ void uart0_rx_handler();
 #define MSS_BAUD_RATE115200 115200
 #define HK_API_ID 0x1
 #define HK_PKT_LENGTH sizeof(pkt_hk_t)
+#define HK_PKT_PERIOD 3
 #define PLD_PKT_LENGTH sizeof(pkt_pld_t)
 #define PLD_API_ID 0x2
 #define PLD_PKT_LENGTH sizeof(pkt_pld_t)
+#define PLD_PKT_PERIOD 5
 #define PILOT_REVERSE_BYTE_ORDER(var)	(((var) << 8) | ((var) >> 8))
 
 //static imu_t imu_struct = {IMU_ADDR, &g_core_i2c5, COREI2C_5_0, I2C_PCLK_DIV_256, 0x15, 0x16, {0x20, 0x60}, 0x28, 0x2A, 0x2C, 0x29, 0x2B, 0x2D, {0x10,0x6A}, 0x18, 0x1A, 0x1C, 0x19, 0x1B, 0x1D };
@@ -45,8 +48,8 @@ size_t uart1_irq_size;
 
 #define DAC_ADDR 0x0E
 #define ADC_ADDR 0x21
-#define QUEUE_LENGTH 1
-#define NUM_PKTS 3
+#define QUEUE_SIZE 3
+#define NUM_PKTS 2
 
 char c[25];
 char argu[25];
@@ -56,7 +59,7 @@ uint8_t data[512];
 uint8_t data_pld[50];
 uint8_t device[256];
 uint8_t device_param[256];
-
+TimerHandle_t pkt_timer[NUM_PKTS];
 //UBaseType_t Num_of_elements = 5;
 
 

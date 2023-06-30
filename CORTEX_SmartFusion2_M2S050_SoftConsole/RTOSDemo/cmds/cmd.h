@@ -1,28 +1,17 @@
 
 #include "Demo_Tasks/demo_tasks.h"
 #include "timers.h"
+#include "osal/osal.h"
 
 #ifndef __cmd_
 #define __cmd_
 
 #define MAX_CMD_PARAM 2
 #define NUM_TIMER 1
-#define NUM_CMDS 2
+#define NUM_CMDS 3
 #define PILOT_REVERSE_BYTE_ORDER(var)	(((var) << 8) | ((var) >> 8))
 
 TimerHandle_t cmd_timer[NUM_TIMER];
-
-void cmd_noop(uint8_t id, uint8_t opcode, uint16_t length);
-void set_pkt_rate(uint8_t id, uint8_t opcode, uint16_t length);
-
-typedef struct cmd{
-
-	uint8_t id;
-	uint16_t length;
-	void (*ex_func)(uint8_t id, uint8_t opcode, uint16_t length);
-
-}__attribute__((packed))cmd_t;
-
 
 typedef struct rx_cmd{
 
@@ -36,8 +25,23 @@ typedef struct rx_cmd{
 }__attribute__((packed))rx_cmd_t;
 
 
+typedef struct cmd{
+
+	uint8_t id;
+	uint16_t length;
+	void (*ex_func)(rx_cmd_t* rcv_cmd);
+
+}__attribute__((packed))cmd_t;
+
+
+
+
+
 uint8_t cmd_valid(rx_cmd_t* rx_cmd);
 void cmd_engine(rx_cmd_t* rx_cmd);
+
+void cmd_noop(rx_cmd_t* rcv_cmd);
+void set_pkt_rate(rx_cmd_t* rcv_cmd);
 
 typedef struct pkt_rate{
 

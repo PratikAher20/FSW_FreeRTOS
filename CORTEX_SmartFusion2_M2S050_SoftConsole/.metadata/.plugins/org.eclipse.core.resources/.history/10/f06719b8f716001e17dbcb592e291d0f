@@ -1,0 +1,29 @@
+
+#include "Demo_Tasks/demo_tasks.h"
+
+#ifndef __STREAM__H
+#define __STREAM__H
+
+
+
+typedef struct stream{
+
+	pkt_name_t pkt_type;
+
+	uint16_t rate;
+
+}__attribute__((packed))stream_t;
+
+
+void set_pktRate(stream_t pkt_stream);
+void pkt_stream(pkt_t pkt);
+
+
+
+
+
+
+
+
+
+#endif

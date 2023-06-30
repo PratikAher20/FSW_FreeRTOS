@@ -1,0 +1,31 @@
+
+#include "Demo_Tasks/demo_tasks.h"
+
+#ifndef __STREAM__H
+#define __STREAM__H
+
+
+
+typedef struct stream{
+
+	pkt_name_t pkt_type;
+
+//	uint8_t pkt_priority;  How to use the Priority within the queue
+
+	uint16_t rate;
+
+}__attribute__((packed))stream_t;
+
+
+void set_pktRate(pkt_name_t , rate);
+void pkt_stream(pkt_t pkt);
+
+
+
+
+
+
+
+
+
+#endif
