@@ -204,5 +204,9 @@ standard names. */
 #define xPortPendSVHandler PendSV_Handler
 #define xPortSysTickHandler SysTick_Handler
 
+//#if(configUSE_TRACE_FACILITY == 1)
+//#include "Tracelyzer/include/trcRecorder.h"
+//#endif
+
 #endif /* FREERTOS_CONFIG_H */
 

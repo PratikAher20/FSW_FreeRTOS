@@ -511,8 +511,8 @@ void demo_tasks(void){
 		uint8_t i;
 		for(i=0; i<NUM_PKTS; i++){
 
-			pkt_timer[i] = xTimerCreate("PKT_Timer", xMsToTicks(pkt_stream[i].rate),pdTRUE, (void* )0, vtlm_task);
-			vTimerSetTimerID(pkt_timer[i], (void* )i);
+			pkt_timer[i] = xTimerCreate("PKT_Timer", xMsToTicks(pkt_stream[i].rate),pdTRUE, (void* )i, vtlm_task);
+//			vTimerSetTimerID(pkt_timer[i], (void* )i);
 			xTimerStart(pkt_timer[i], 0);
 
 		}

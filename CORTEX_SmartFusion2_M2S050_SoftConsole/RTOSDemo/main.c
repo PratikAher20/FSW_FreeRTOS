@@ -122,6 +122,8 @@ int main( void )
 
 	/* The configCREATE_SIMPLE_BLINKY_DEMO_ONLY setting is described at the top
 	of this file. */
+//	vTraceEnable(TRC_START);
+
 	#if configCREATE_SIMPLE_BLINKY_DEMO_ONLY == 1
 	{
 		//main_blinky();

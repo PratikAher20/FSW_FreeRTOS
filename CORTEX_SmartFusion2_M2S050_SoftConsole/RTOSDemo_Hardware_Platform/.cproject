@@ -30,6 +30,8 @@
 <option defaultValue="gnu.c.optimization.level.none" id="gnu.c.compiler.cross.cortexm3.lib.debug.option.debugging.level.1682080951" name="Debug Level" superClass="gnu.c.compiler.cross.cortexm3.lib.debug.option.debugging.level" value="gnu.c.debugging.level.max" valueType="enumerated"/>
 <option id="gnu.c.compiler.option.include.paths.1398648520" name="Include paths (-I)" superClass="gnu.c.compiler.option.include.paths" valueType="includePath">
 <listOptionValue builtIn="false" value="${workspace_loc:/RTOSDemo_Hardware_Platform/}"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/RTOSDemo/Tracelyzer/config}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/RTOSDemo/Tracelyzer/include}&quot;"/>
 <listOptionValue builtIn="false" value="${workspace_loc:/RTOSDemo_Hardware_Platform/CMSIS}"/>
 <listOptionValue builtIn="false" value="${workspace_loc:/RTOSDemo_Hardware_Platform/CMSIS/startup_gcc}"/>
 <listOptionValue builtIn="false" value="${workspace_loc:/RTOSDemo_Hardware_Platform/drivers}"/>
@@ -312,6 +314,7 @@
 <storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
 <storageModule moduleId="org.eclipse.cdt.internal.ui.text.commentOwnerProjectMappings"/>
 <storageModule moduleId="org.eclipse.cdt.core.language.mapping"/>
+<storageModule moduleId="org.eclipse.cdt.make.core.buildtargets"/>
 </cconfiguration>
 </storageModule>
 <storageModule moduleId="cdtBuildSystem" version="4.0.0">
