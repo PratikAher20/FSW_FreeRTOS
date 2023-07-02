@@ -1,10 +1,13 @@
-<!-- File generated from ../../RTOSDemo_Hardware_Platform/CMSIS/startup_gcc/debug-in-microsemi-smartfusion2-esram.ld -->
+<!-- File generated from ../../RTOSDemo_Hardware_Platform/CMSIS/startup_gcc/debug-in-external-ram.ld -->
 <board>
  <properties>
   <property name="system-v6-m"/>
  </properties>
  <memory-map>
     <memory-device address="0x20000000" size="64k" type="ram">
+      <description>SRAM</description>
+    </memory-device>
+    <memory-device address="0xA0000000" size="32M" type="ram">
       <description>SRAM</description>
     </memory-device>
   </memory-map>

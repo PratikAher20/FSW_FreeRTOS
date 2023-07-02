@@ -28,6 +28,7 @@ i2c_instance_t g_core_i2c2;
 
 void uart0_rx_handler();
 
+#define DEFAULT_ZERO_TIMER_PERIOD 100
 #define signal (0)
 #define signal_one (1)
 #define MSS_BAUD_RATE9600 9600
@@ -38,7 +39,7 @@ void uart0_rx_handler();
 #define PLD_PKT_LENGTH sizeof(pkt_pld_t)
 #define PLD_API_ID 0x2
 #define PLD_PKT_LENGTH sizeof(pkt_pld_t)
-#define PLD_PKT_PERIOD 5
+#define PLD_PKT_PERIOD DEFAULT_ZERO_TIMER_PERIOD
 #define PILOT_REVERSE_BYTE_ORDER(var)	(((var) << 8) | ((var) >> 8))
 
 //static imu_t imu_struct = {IMU_ADDR, &g_core_i2c5, COREI2C_5_0, I2C_PCLK_DIV_256, 0x15, 0x16, {0x20, 0x60}, 0x28, 0x2A, 0x2C, 0x29, 0x2B, 0x2D, {0x10,0x6A}, 0x18, 0x1A, 0x1C, 0x19, 0x1B, 0x1D };

@@ -15,7 +15,7 @@
 static imu_t imu_struct = {IMU_ADDR, &g_core_i2c5, COREI2C_5_0, I2C_PCLK_DIV_256, 0x15, 0x16, {0x20, 0x60}, 0x28, 0x2A, 0x2C, 0x29, 0x2B, 0x2D, {0x10,0x6A}, 0x18, 0x1A, 0x1C, 0x19, 0x1B, 0x1D };
 static vc_sensor_t vc_struct = {DAC_ADDR, &g_core_i2c2, COREI2C_2_0, I2C_PCLK_DIV_256, {0,0}, {0,0}, {0,0}};
 uint16_t volatile command_cnt = 0;
-uint16_t volatile command_reject_cnt;
+uint16_t volatile command_reject_cnt = 0;
 
 i2c_instance_t g_core_i2c0;
 i2c_instance_t g_core_i2c1;
@@ -166,7 +166,12 @@ void vGetPktStruct(pkt_name_t pktname, void* pktdata, uint8_t pktsize){
 void vtlm_task(TimerHandle_t exp_timer){
 	uint16_t seq_num=0;  // Try to generalised this timer callback function. Also combine the tlm_task and the tlm_sender task.
 	uint16_t* t_id;
-	t_id = (uint16_t*) pvTimerGetTimerID(exp_timer);
+	t_id = (uint16_t* )pvTimerGetTimerID(exp_timer);
+//	pkt_stream->pkt_timer_id = (uint16_t*) pvTimerGetTimerID(exp_timer);
+//
+//	if(pkt_stream->pkt_timer_id == pkt_stream->pkt.pkt_type){
+//
+//	}
 
 	if(t_id == 0){
 		hk_pkt->ccsds_p1 = PILOT_REVERSE_BYTE_ORDER(((ccsds_p1(tlm_pkt_type, HK_API_ID))));
@@ -510,10 +515,15 @@ void demo_tasks(void){
 //		feed_cmd_tsk = xTaskCreate(pro_cmd_tsk, "Command", configMINIMAL_STACK_SIZE, NULL, 2, &cmd_tsk);
 		uint8_t i;
 		for(i=0; i<NUM_PKTS; i++){
-
-			pkt_timer[i] = xTimerCreate("PKT_Timer", xMsToTicks(pkt_stream[i].rate),pdTRUE, (void* )i, vtlm_task);
-//			vTimerSetTimerID(pkt_timer[i], (void* )i);
-			xTimerStart(pkt_timer[i], 0);
+			if(pkt_stream[i].rate != DEFAULT_ZERO_TIMER_PERIOD){
+				pkt_timer[i] = xTimerCreate("PKT_Timer", xMsToTicks(pkt_stream[i].rate),pdTRUE, (void* )i, vtlm_task);
+	//			vTimerSetTimerID(pkt_timer[i], (void* )i);
+				xTimerStart(pkt_timer[i], 0);
+			}
+			else{
+				pkt_timer[i] = xTimerCreate("PKT_Timer", xMsToTicks(pkt_stream[i].rate),pdTRUE, (void* )i, vtlm_task);
+				// Not starting the timer which has zero time period. Its time period will be changed when needed.
+			}
 
 		}
 

@@ -32,7 +32,7 @@ Blinky-Demo \
 # Microsemi SoftConsole IDE Variables
 ################################################################################
 
-BUILDCMD = arm-none-eabi-gcc -mthumb -mcpu=cortex-m3  -L"C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug" -T../../RTOSDemo_Hardware_Platform/CMSIS/startup_gcc/debug-in-microsemi-smartfusion2-esram.ld -Wl,-Map=$(EXECUTABLE).map -Xlinker -gc-sections 
+BUILDCMD = arm-none-eabi-gcc -mthumb -mcpu=cortex-m3  -L"C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo_Hardware_Platform\Debug" -T../../RTOSDemo_Hardware_Platform/CMSIS/startup_gcc/debug-in-external-ram.ld -Wl,-Map=$(EXECUTABLE).map -Xlinker -gc-sections 
 SHELL := cmd.exe
 EXECUTABLE := RTOSDemo
 

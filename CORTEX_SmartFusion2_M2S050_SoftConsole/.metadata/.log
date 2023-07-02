@@ -3564,3 +3564,145 @@ org.eclipse.cdt.debug.mi.core.MIException: The program is not being run.
 
 !ENTRY org.eclipse.debug.core 4 125 2023-07-01 14:38:27.945
 !MESSAGE Inferior terminated
+
+!ENTRY org.eclipse.debug.core 4 125 2023-07-02 09:09:42.105
+!MESSAGE Inferior terminated
+
+!ENTRY org.eclipse.debug.core 4 125 2023-07-02 09:09:42.106
+!MESSAGE Inferior terminated
+
+!ENTRY org.eclipse.debug.core 4 125 2023-07-02 09:09:42.108
+!MESSAGE Inferior terminated
+
+!ENTRY org.eclipse.debug.core 4 125 2023-07-02 09:09:42.108
+!MESSAGE Inferior terminated
+
+!ENTRY org.eclipse.debug.core 4 125 2023-07-02 09:14:14.516
+!MESSAGE Inferior terminated
+
+!ENTRY org.eclipse.debug.core 4 125 2023-07-02 09:14:14.516
+!MESSAGE Inferior terminated
+
+!ENTRY org.eclipse.debug.core 4 125 2023-07-02 09:14:14.516
+!MESSAGE Inferior terminated
+
+!ENTRY org.eclipse.debug.core 4 125 2023-07-02 09:14:14.517
+!MESSAGE Inferior terminated
+
+!ENTRY org.eclipse.debug.core 4 125 2023-07-02 09:27:29.225
+!MESSAGE Inferior terminated
+
+!ENTRY org.eclipse.debug.core 4 125 2023-07-02 09:27:29.225
+!MESSAGE Inferior terminated
+
+!ENTRY org.eclipse.debug.core 4 125 2023-07-02 09:27:29.226
+!MESSAGE Inferior terminated
+
+!ENTRY org.eclipse.debug.core 4 125 2023-07-02 09:27:29.226
+!MESSAGE Inferior terminated
+
+!ENTRY org.eclipse.debug.core 4 125 2023-07-02 09:30:28.454
+!MESSAGE Inferior terminated
+
+!ENTRY org.eclipse.debug.core 4 125 2023-07-02 09:30:28.454
+!MESSAGE Inferior terminated
+
+!ENTRY org.eclipse.debug.core 4 125 2023-07-02 09:30:28.455
+!MESSAGE Inferior terminated
+
+!ENTRY org.eclipse.debug.core 4 125 2023-07-02 09:30:28.455
+!MESSAGE Inferior terminated
+
+!ENTRY org.eclipse.debug.core 4 125 2023-07-02 10:02:20.973
+!MESSAGE Inferior terminated
+
+!ENTRY org.eclipse.debug.core 4 125 2023-07-02 10:02:20.974
+!MESSAGE Inferior terminated
+
+!ENTRY org.eclipse.debug.core 4 125 2023-07-02 10:02:20.974
+!MESSAGE Inferior terminated
+
+!ENTRY org.eclipse.debug.core 4 125 2023-07-02 10:02:20.975
+!MESSAGE Inferior terminated
+
+!ENTRY org.eclipse.equinox.p2.ui 4 0 2023-07-02 10:09:20.444
+!MESSAGE Could not locate the running profile instance. The eclipse.p2.data.area and eclipse.p2.profile properties may not be set correctly in this application's config.ini file.
+!STACK 1
+org.eclipse.equinox.internal.provisional.p2.core.ProvisionException: Could not locate the running profile instance. The eclipse.p2.data.area and eclipse.p2.profile properties may not be set correctly in this application's config.ini file.
+	at org.eclipse.equinox.internal.p2.ui.sdk.ProvSDKUIActivator.getSelfProfileId(ProvSDKUIActivator.java:170)
+	at org.eclipse.equinox.internal.p2.ui.sdk.PreloadingRepositoryHandler.execute(PreloadingRepositoryHandler.java:49)
+	at org.eclipse.ui.internal.handlers.HandlerProxy.execute(HandlerProxy.java:294)
+	at org.eclipse.core.commands.Command.executeWithChecks(Command.java:476)
+	at org.eclipse.core.commands.ParameterizedCommand.executeWithChecks(ParameterizedCommand.java:508)
+	at org.eclipse.ui.internal.handlers.HandlerService.executeCommand(HandlerService.java:169)
+	at org.eclipse.ui.internal.handlers.SlaveHandlerService.executeCommand(SlaveHandlerService.java:241)
+	at org.eclipse.ui.menus.CommandContributionItem.handleWidgetSelection(CommandContributionItem.java:770)
+	at org.eclipse.ui.menus.CommandContributionItem.access$10(CommandContributionItem.java:756)
+	at org.eclipse.ui.menus.CommandContributionItem$5.handleEvent(CommandContributionItem.java:746)
+	at org.eclipse.swt.widgets.EventTable.sendEvent(EventTable.java:84)
+	at org.eclipse.swt.widgets.Widget.sendEvent(Widget.java:1003)
+	at org.eclipse.swt.widgets.Display.runDeferredEvents(Display.java:3910)
+	at org.eclipse.swt.widgets.Display.readAndDispatch(Display.java:3503)
+	at org.eclipse.ui.internal.Workbench.runEventLoop(Workbench.java:2405)
+	at org.eclipse.ui.internal.Workbench.runUI(Workbench.java:2369)
+	at org.eclipse.ui.internal.Workbench.access$4(Workbench.java:2221)
+	at org.eclipse.ui.internal.Workbench$5.run(Workbench.java:500)
+	at org.eclipse.core.databinding.observable.Realm.runWithDefault(Realm.java:332)
+	at org.eclipse.ui.internal.Workbench.createAndRunWorkbench(Workbench.java:493)
+	at org.eclipse.ui.PlatformUI.createAndRunWorkbench(PlatformUI.java:149)
+	at org.eclipse.ui.internal.ide.application.IDEApplication.start(IDEApplication.java:113)
+	at org.eclipse.equinox.internal.app.EclipseAppHandle.run(EclipseAppHandle.java:194)
+	at org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.runApplication(EclipseAppLauncher.java:110)
+	at org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.start(EclipseAppLauncher.java:79)
+	at org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:368)
+	at org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:179)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at org.eclipse.equinox.launcher.Main.invokeFramework(Main.java:559)
+	at org.eclipse.equinox.launcher.Main.basicRun(Main.java:514)
+	at org.eclipse.equinox.launcher.Main.run(Main.java:1311)
+!SUBENTRY 1 org.eclipse.equinox.p2.ui.sdk 2 0 2023-07-02 10:09:20.445
+!MESSAGE Could not locate the running profile instance. The eclipse.p2.data.area and eclipse.p2.profile properties may not be set correctly in this application's config.ini file.
+
+!ENTRY org.eclipse.equinox.p2.ui 4 0 2023-07-02 10:09:40.377
+!MESSAGE Could not locate the running profile instance. The eclipse.p2.data.area and eclipse.p2.profile properties may not be set correctly in this application's config.ini file.
+!STACK 1
+org.eclipse.equinox.internal.provisional.p2.core.ProvisionException: Could not locate the running profile instance. The eclipse.p2.data.area and eclipse.p2.profile properties may not be set correctly in this application's config.ini file.
+	at org.eclipse.equinox.internal.p2.ui.sdk.ProvSDKUIActivator.getSelfProfileId(ProvSDKUIActivator.java:170)
+	at org.eclipse.equinox.internal.p2.ui.sdk.PreloadingRepositoryHandler.execute(PreloadingRepositoryHandler.java:49)
+	at org.eclipse.ui.internal.handlers.HandlerProxy.execute(HandlerProxy.java:294)
+	at org.eclipse.core.commands.Command.executeWithChecks(Command.java:476)
+	at org.eclipse.core.commands.ParameterizedCommand.executeWithChecks(ParameterizedCommand.java:508)
+	at org.eclipse.ui.internal.handlers.HandlerService.executeCommand(HandlerService.java:169)
+	at org.eclipse.ui.internal.handlers.SlaveHandlerService.executeCommand(SlaveHandlerService.java:241)
+	at org.eclipse.ui.menus.CommandContributionItem.handleWidgetSelection(CommandContributionItem.java:770)
+	at org.eclipse.ui.menus.CommandContributionItem.access$10(CommandContributionItem.java:756)
+	at org.eclipse.ui.menus.CommandContributionItem$5.handleEvent(CommandContributionItem.java:746)
+	at org.eclipse.swt.widgets.EventTable.sendEvent(EventTable.java:84)
+	at org.eclipse.swt.widgets.Widget.sendEvent(Widget.java:1003)
+	at org.eclipse.swt.widgets.Display.runDeferredEvents(Display.java:3910)
+	at org.eclipse.swt.widgets.Display.readAndDispatch(Display.java:3503)
+	at org.eclipse.ui.internal.Workbench.runEventLoop(Workbench.java:2405)
+	at org.eclipse.ui.internal.Workbench.runUI(Workbench.java:2369)
+	at org.eclipse.ui.internal.Workbench.access$4(Workbench.java:2221)
+	at org.eclipse.ui.internal.Workbench$5.run(Workbench.java:500)
+	at org.eclipse.core.databinding.observable.Realm.runWithDefault(Realm.java:332)
+	at org.eclipse.ui.internal.Workbench.createAndRunWorkbench(Workbench.java:493)
+	at org.eclipse.ui.PlatformUI.createAndRunWorkbench(PlatformUI.java:149)
+	at org.eclipse.ui.internal.ide.application.IDEApplication.start(IDEApplication.java:113)
+	at org.eclipse.equinox.internal.app.EclipseAppHandle.run(EclipseAppHandle.java:194)
+	at org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.runApplication(EclipseAppLauncher.java:110)
+	at org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.start(EclipseAppLauncher.java:79)
+	at org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:368)
+	at org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:179)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at org.eclipse.equinox.launcher.Main.invokeFramework(Main.java:559)
+	at org.eclipse.equinox.launcher.Main.basicRun(Main.java:514)
+	at org.eclipse.equinox.launcher.Main.run(Main.java:1311)
+!SUBENTRY 1 org.eclipse.equinox.p2.ui.sdk 2 0 2023-07-02 10:09:40.377
+!MESSAGE Could not locate the running profile instance. The eclipse.p2.data.area and eclipse.p2.profile properties may not be set correctly in this application's config.ini file.

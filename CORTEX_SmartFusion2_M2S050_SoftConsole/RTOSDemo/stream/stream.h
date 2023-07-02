@@ -10,6 +10,7 @@ typedef struct stream{
 
 	pkt_t pkt;
 
+	uint16_t* pkt_timer_id;
 //	uint8_t pkt_priority;  How to use the Priority within the queue
 
 	uint16_t rate;

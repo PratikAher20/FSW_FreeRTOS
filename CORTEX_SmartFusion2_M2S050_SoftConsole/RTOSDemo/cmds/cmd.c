@@ -69,9 +69,12 @@ void cmd_noop(rx_cmd_t* rcv_cmd){
 
 void set_pkt_rate(rx_cmd_t* rcv_cmd){
 
-	xTimerChangePeriod(pkt_timer[rcv_cmd->parameters[0]], xMsToTicks(rcv_cmd->parameters[1] * 1000), 0);
-
-
+	if(rcv_cmd->parameters[1] != 0){
+		xTimerChangePeriod(pkt_timer[rcv_cmd->parameters[0]], xMsToTicks(rcv_cmd->parameters[1] * 1000), 0);
+	}
+	else{
+		xTimerStop(pkt_timer[rcv_cmd->parameters[0]], 0);
+	}
 	// Write a function to take in APID and increase the downlink rate of that pkt.
 //	if(pkt_rate->pkt_apid == HK_API_ID){
 //		xTimerChangePeriod() Change the downlink rate of HK packet
