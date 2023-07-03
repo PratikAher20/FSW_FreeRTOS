@@ -9,13 +9,10 @@
 #include "FreeRTOS-Source/include/queue.h"
 #include "semphr.h"
 #include "queue.h"
-#include "cmds/cmd.h"
 #include "stream/stream.h"
 
 static imu_t imu_struct = {IMU_ADDR, &g_core_i2c5, COREI2C_5_0, I2C_PCLK_DIV_256, 0x15, 0x16, {0x20, 0x60}, 0x28, 0x2A, 0x2C, 0x29, 0x2B, 0x2D, {0x10,0x6A}, 0x18, 0x1A, 0x1C, 0x19, 0x1B, 0x1D };
 static vc_sensor_t vc_struct = {DAC_ADDR, &g_core_i2c2, COREI2C_2_0, I2C_PCLK_DIV_256, {0,0}, {0,0}, {0,0}};
-uint16_t volatile command_cnt = 0;
-uint16_t volatile command_reject_cnt = 0;
 
 i2c_instance_t g_core_i2c0;
 i2c_instance_t g_core_i2c1;
@@ -33,9 +30,9 @@ BaseType_t feed_get_payload_data;
 BaseType_t feed_tlm_task;
 BaseType_t feed_tlm_sender;
 BaseType_t feed_cmd_tsk;
-
 SemaphoreHandle_t xMutex;
-
+uint16_t command_cnt ;
+uint16_t command_reject_cnt;
 
 UBaseType_t data_queue_length = 64;
 UBaseType_t item_size = 8;
@@ -358,7 +355,6 @@ void irq_tsk_func(void* f_param){
 
 		xTaskNotifyWait(0x00, 0, &ulNotifiedValue, portMAX_DELAY);
 		ulTaskNotifyTake(pdTRUE, 1);
-		rx_cmd_t* rx_cmd;
 		rx_cmd = (rx_cmd_t* ) f_param;
 
 
@@ -515,7 +511,7 @@ void demo_tasks(void){
 //		feed_cmd_tsk = xTaskCreate(pro_cmd_tsk, "Command", configMINIMAL_STACK_SIZE, NULL, 2, &cmd_tsk);
 		uint8_t i;
 		for(i=0; i<NUM_PKTS; i++){
-			if(pkt_stream[i].rate != DEFAULT_ZERO_TIMER_PERIOD){
+			if(pkt_stream[i].rate != DEFAULT_ZERO_TIMER_PERIOD* 1000){
 				pkt_timer[i] = xTimerCreate("PKT_Timer", xMsToTicks(pkt_stream[i].rate),pdTRUE, (void* )i, vtlm_task);
 	//			vTimerSetTimerID(pkt_timer[i], (void* )i);
 				xTimerStart(pkt_timer[i], 0);

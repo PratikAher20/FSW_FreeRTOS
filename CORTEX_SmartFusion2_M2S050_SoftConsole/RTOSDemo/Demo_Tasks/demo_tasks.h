@@ -22,13 +22,15 @@
 #include "pilot/read.h"
 #include "pilot/write.h"
 #include "timers.h"
+#include "cmds/cmd.h"
+
 
 //uint8_t prompt_msg[30] =  "\n\r RTOS_Testing :  \0" ;
 i2c_instance_t g_core_i2c2;
 
 void uart0_rx_handler();
 
-#define DEFAULT_ZERO_TIMER_PERIOD 100
+#define DEFAULT_ZERO_TIMER_PERIOD 10
 #define signal (0)
 #define signal_one (1)
 #define MSS_BAUD_RATE9600 9600
@@ -60,7 +62,9 @@ uint8_t data[512];
 uint8_t data_pld[50];
 uint8_t device[256];
 uint8_t device_param[256];
+
 TimerHandle_t pkt_timer[NUM_PKTS];
+rx_cmd_t* rx_cmd;
 //UBaseType_t Num_of_elements = 5;
 
 

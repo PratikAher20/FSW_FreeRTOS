@@ -8,6 +8,9 @@ cmd_t* cmd;
 
 cmd_t cmd_list[NUM_CMDS];
 
+extern uint16_t command_cnt;
+extern uint16_t command_reject_cnt;
+
 uint8_t cmd_valid(rx_cmd_t* rx_cmd){
 	return 1;  //Will be checking the validated of the checksum.
 }
@@ -40,15 +43,17 @@ void add_cmd(uint8_t id, uint16_t length, void (*ex_func)(uint8_t id, rx_cmd_t* 
 
 void vcmd_callback(){
 	//Execution for the timer based command
+	cmd_list[rx_cmd->ccsds_APID - 1].ex_func(rx_cmd);
 }
 
 void cmd_engine(rx_cmd_t* rx_cmd){
 
 	add_cmd(0, 16, cmd_noop);
 	add_cmd(1, 16, set_pkt_rate);   //the actual command apid's is one greater than this.
+	add_cmd(2, 16, cmd_sc_reset);
 
 	if(chk_s_cmd(rx_cmd)){  //if the command is storable
-		cmd_timer[0] = xTimerCreate("cmd_timer", pdMS_TO_TICKS(rx_cmd->ccsds_time), pdFALSE, (void*)0, vcmd_callback);
+		cmd_timer[0] = xTimerCreate("cmd_timer", pdMS_TO_TICKS(rx_cmd->ccsds_time * 1000), pdFALSE, (void*)0, vcmd_callback);
 		xTimerStart(cmd_timer[0], 0);
 	}
 	else{
@@ -80,6 +85,12 @@ void set_pkt_rate(rx_cmd_t* rcv_cmd){
 //		xTimerChangePeriod() Change the downlink rate of HK packet
 //	}
 
+}
+
+void cmd_sc_reset(rx_cmd_t* rcv_cmd){
+
+	command_cnt = 0;
+	// Power Cycle other Components;
 
 }
 

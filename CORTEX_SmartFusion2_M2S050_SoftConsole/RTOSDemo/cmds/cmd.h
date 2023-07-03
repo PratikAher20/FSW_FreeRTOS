@@ -13,6 +13,8 @@
 
 TimerHandle_t cmd_timer[NUM_TIMER];
 
+
+
 typedef struct rx_cmd{
 
 	uint16_t ccsds_cmd_p1;
@@ -38,10 +40,12 @@ typedef struct cmd{
 
 
 uint8_t cmd_valid(rx_cmd_t* rx_cmd);
+
 void cmd_engine(rx_cmd_t* rx_cmd);
 
 void cmd_noop(rx_cmd_t* rcv_cmd);
 void set_pkt_rate(rx_cmd_t* rcv_cmd);
+void cmd_sc_reset(rx_cmd_t* rcv_cmd);
 
 typedef struct pkt_rate{
 

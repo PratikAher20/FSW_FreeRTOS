@@ -21,6 +21,8 @@ stream_t pkt_stream[NUM_PKTS];
 
 void set_pktRate(pkt_name_t , uint8_t );
 void pkt_send(stream_t ps);
+//extern uint16_t command_cnt = 0;
+//extern uint16_t command_reject_cnt = 0;
 
 
 
