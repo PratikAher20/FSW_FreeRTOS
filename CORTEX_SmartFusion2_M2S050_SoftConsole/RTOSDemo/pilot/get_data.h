@@ -7,7 +7,7 @@
 
 #define IMU_ADDR 0x6a
 #define VC1 0x40
-#define VC_SENSOR_I2C &g_core_i2c2
+#define VC_SENSOR_I2C &g_mss_i2c0
 #define DAC_ADDR 0x0E
 
 #define VC_INIT_CMD                     0x7007
@@ -16,7 +16,7 @@
 #define VC_BUSV_CHx(x)                  ((0x2 * x))
 #define VC_SHUNTV_CHx(x)                ((0x2 * x - 1))
 
-#define COREI2C_2_0   0x50002000U
+#define COREI2C_2_0   0x30000000U
 #define COREI2C_4_0   0x50004000U
 #define COREI2C_5_0   0x50005000U
 
