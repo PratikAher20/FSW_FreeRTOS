@@ -22,7 +22,7 @@ void init(device_t d, void* command){
 		vc_sensor_t* vc_pkt;
 		vc_pkt = (vc_sensor_t*) command;
 //		MSS_I2C_init(&g_mss_i2c0, vc_pkt->Base_Addr, DUMMY_I2C_ADDR, vc_pkt->clck_speed);
-		MSS_I2C_init(&g_mss_i2c0, DAC_ADDR, I2C_PCLK_DIV_256);
+		I2C_init(vc_pkt->g_core_i2c2, vc_pkt->Base_Addr, DUMMY_I2C_ADDR, I2C_PCLK_DIV_256);
 	}
 	else if(d == all){
 		I2C_init(&g_core_i2c5, COREI2C_5_0, DUMMY_I2C_ADDR, I2C_PCLK_DIV_256);

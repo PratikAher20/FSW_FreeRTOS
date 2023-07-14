@@ -110,7 +110,7 @@ void get_hk_data(void* d){
 			data[511] = HK_API_ID;
 //			xTaskNotifyGive(tlm_tsk_handle);
 			vTaskPrioritySet(get_pld_pkt_handle, uxPriority + 1);
-			vTask_Delay(HK_COLL_RATE);
+//			vTask_Delay(HK_COLL_RATE);
 
 		}
 	}
@@ -133,7 +133,7 @@ void get_pld_data(void* d1){
 			data_pld[49] = PLD_API_ID;
 //			xTaskNotifyGive(tlm_tsk_handle);
 			vTaskPrioritySet(NULL, uxPriority - 2);
-			vTask_Delay(PLD_COLL_RATE);
+//			vTask_Delay(PLD_COLL_RATE);
 
 		}
 
