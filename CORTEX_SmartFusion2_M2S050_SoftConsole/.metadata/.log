@@ -5266,3 +5266,21 @@ org.eclipse.cdt.debug.mi.core.MIException: The program is not being run.
 
 !ENTRY org.eclipse.debug.core 4 125 2023-07-14 09:58:16.300
 !MESSAGE Inferior terminated
+
+!ENTRY org.eclipse.debug.core 4 125 2023-07-14 10:49:48.685
+!MESSAGE Inferior terminated
+
+!ENTRY org.eclipse.debug.core 4 125 2023-07-14 10:49:48.687
+!MESSAGE Inferior terminated
+
+!ENTRY org.eclipse.debug.core 4 125 2023-07-14 10:49:48.687
+!MESSAGE Inferior terminated
+
+!ENTRY org.eclipse.debug.core 4 125 2023-07-14 10:49:48.688
+!MESSAGE Inferior terminated
+
+!ENTRY org.eclipse.debug.core 4 125 2023-07-14 10:49:48.688
+!MESSAGE Inferior terminated
+
+!ENTRY org.eclipse.debug.core 4 125 2023-07-14 10:49:48.689
+!MESSAGE Inferior terminated
