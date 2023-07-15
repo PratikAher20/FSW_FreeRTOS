@@ -51,6 +51,9 @@ TaskHandle_t cmd_tsk;
 pkt_hk_t* hk_pkt;
 pkt_pld_t* pld_pkt;
 
+uint16_t hk_seq_num = 1;
+uint16_t pld_seq_num = 1;
+
 extern mss_i2c_instance_t g_mss_i2c1;
 
 void get_hk_data(void* d){
@@ -163,7 +166,7 @@ void vGetPktStruct(pkt_name_t pktname, void* pktdata, uint8_t pktsize){
 }
 
 void vtlm_task(TimerHandle_t exp_timer){
-	uint16_t seq_num=0;  // Try to generalised this timer callback function. Also combine the tlm_task and the tlm_sender task.
+	  // Try to generalised this timer callback function. Also combine the tlm_task and the tlm_sender task.
 	uint16_t* t_id;
 	t_id = (uint16_t* )pvTimerGetTimerID(exp_timer);
 //	pkt_stream->pkt_timer_id = (uint16_t*) pvTimerGetTimerID(exp_timer);
@@ -174,7 +177,7 @@ void vtlm_task(TimerHandle_t exp_timer){
 
 	if(t_id == 0){
 		hk_pkt->ccsds_p1 = PILOT_REVERSE_BYTE_ORDER(((ccsds_p1(tlm_pkt_type, HK_API_ID))));
-		hk_pkt->ccsds_p2 = PILOT_REVERSE_BYTE_ORDER(((ccsds_p2(++seq_num))));
+		hk_pkt->ccsds_p2 = PILOT_REVERSE_BYTE_ORDER(((ccsds_p2((hk_seq_num++)))));
 		hk_pkt->ccsds_p3 = PILOT_REVERSE_BYTE_ORDER(((ccsds_p3(HK_PKT_LENGTH))));
 		hk_pkt->ccsds_s1 = 0;
 		hk_pkt->ccsds_s2 = 0;
@@ -183,7 +186,7 @@ void vtlm_task(TimerHandle_t exp_timer){
 	}
 	if(t_id == 1){
 		pld_pkt->ccsds_p1 = PILOT_REVERSE_BYTE_ORDER(((ccsds_p1(tlm_pkt_type, PLD_API_ID))));
-		pld_pkt->ccsds_p2 = PILOT_REVERSE_BYTE_ORDER(((ccsds_p2(++seq_num))));
+		pld_pkt->ccsds_p2 = PILOT_REVERSE_BYTE_ORDER(((ccsds_p2(pld_seq_num++))));
 		pld_pkt->ccsds_p3 = PILOT_REVERSE_BYTE_ORDER(((ccsds_p3(PLD_PKT_LENGTH))));
 
 		pld_pkt->ccsds_s1 = 0;
