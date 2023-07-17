@@ -42,7 +42,11 @@ cmds/cmd.d cmds/cmd.o: ../cmds/cmd.c ../cmds/cmd.h \
  C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo\FreeRTOS-Source\include/timers.h \
  C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo\FreeRTOS-Source\include/task.h \
  C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo/cmds/cmd.h \
- C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo/osal/osal.h
+ C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo/osal/osal.h \
+ C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo/memory/memory.h \
+ C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo/memory/SD.h \
+ C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo/pilot/peripherals.h \
+ C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo/memory/SD.h
 
 ../cmds/cmd.h:
 
@@ -133,3 +137,11 @@ C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_Sm
 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo/cmds/cmd.h:
 
 C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo/osal/osal.h:
+
+C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo/memory/memory.h:
+
+C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo/memory/SD.h:
+
+C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo/pilot/peripherals.h:
+
+C:\Users\S-SPACE\Desktop\Pratik\FreeRTOS\FreeRTOS_SC_v3.5\FSW_FreeRTOS\CORTEX_SmartFusion2_M2S050_SoftConsole\RTOSDemo/memory/SD.h:

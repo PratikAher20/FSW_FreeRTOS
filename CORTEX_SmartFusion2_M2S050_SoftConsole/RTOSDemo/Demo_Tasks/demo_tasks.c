@@ -54,6 +54,9 @@ pkt_pld_t* pld_pkt;
 uint16_t hk_seq_num = 1;
 uint16_t pld_seq_num = 1;
 
+partition_t payload_p, hk_p;
+
+
 extern mss_i2c_instance_t g_mss_i2c1;
 
 void get_hk_data(void* d){
@@ -112,6 +115,7 @@ void get_hk_data(void* d){
 
 			data[511] = HK_API_ID;
 //			xTaskNotifyGive(tlm_tsk_handle);
+//			store_data(&hk_p, data);
 			vTaskPrioritySet(get_pld_pkt_handle, uxPriority + 1);
 			vTask_Delay(HK_COLL_RATE);
 
@@ -135,6 +139,7 @@ void get_pld_data(void* d1){
 			}
 			data_pld[49] = PLD_API_ID;
 //			xTaskNotifyGive(tlm_tsk_handle);
+//			store_data(&payload_p, data_pld);
 			vTaskPrioritySet(NULL, uxPriority - 2);
 			vTask_Delay(PLD_COLL_RATE);
 
@@ -450,6 +455,10 @@ void demo_tasks(void){
 
 		set_pktRate(hk, HK_PKT_PERIOD);   //Set all the default packet rate
 		set_pktRate(pld, PLD_PKT_PERIOD);
+
+//		SD_Init();
+//		initialise_partition(&payload_p,PAYLOAD_BLOCK_INIT,PAYLOAD_BLOCK_END);
+//		initialise_partition(&hk_p,HK_BLOCK_INIT,HK_BLOCK_END);
 
 //		I2C_write(VC_SENSOR_I2C, DAC_ADDR, sw_clear, 3, I2C_RELEASE_BUS);
 //		status = I2C_wait_complete(VC_SENSOR_I2C, I2C_NO_TIMEOUT);

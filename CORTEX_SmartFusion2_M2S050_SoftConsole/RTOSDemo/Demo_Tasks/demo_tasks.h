@@ -9,7 +9,7 @@
 #include<CMSIS/hw_reg_io.h>
 //#include<drivers/CoreI2C/core_i2c.h>
 #include<drivers/mss_rtc/mss_rtc.h>
-//#include<drivers/mss_spi/mss_spi.h>
+#include<drivers/mss_spi/mss_spi.h>
 #include<drivers/mss_timer/mss_timer.h>
 #include <drivers/mss_gpio/mss_gpio.h>
 //#include <drivers/mss_i2c/mss_i2c.h>
@@ -23,6 +23,8 @@
 #include "pilot/write.h"
 #include "timers.h"
 #include "cmds/cmd.h"
+#include "memory/memory.h"
+#include "memory/SD.h"
 
 
 //uint8_t prompt_msg[30] =  "\n\r RTOS_Testing :  \0" ;
@@ -45,6 +47,8 @@ void uart0_rx_handler();
 #define PLD_PKT_PERIOD DEFAULT_ZERO_TIMER_PERIOD
 #define PLD_COLL_RATE 3000
 #define PILOT_REVERSE_BYTE_ORDER(var)	(((var) << 8) | ((var) >> 8))
+#define PLD_BLOCK_START 0x13C6EE
+#define PLD_BLOCK_END 0x15C12E
 
 //static imu_t imu_struct = {IMU_ADDR, &g_core_i2c5, COREI2C_5_0, I2C_PCLK_DIV_256, 0x15, 0x16, {0x20, 0x60}, 0x28, 0x2A, 0x2C, 0x29, 0x2B, 0x2D, {0x10,0x6A}, 0x18, 0x1A, 0x1C, 0x19, 0x1B, 0x1D };
 //static vc_sensor_t vc_struct = {VC1, &g_core_i2c2, COREI2C_2_0, I2C_PCLK_DIV_256, {0,0}, {0,0}, {0,0}};
