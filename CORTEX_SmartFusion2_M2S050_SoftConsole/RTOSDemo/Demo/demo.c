@@ -461,10 +461,11 @@ void demo(void){
 
 
 //		imu_t* imu_struct = (imu_t*) device_param;
-		uint8_t REF_DATA[3] = {0x38, 0x00, 0x01};
-		uint8_t PWR[3] = {0x20, 0x00, 0x01};
-		uint8_t config[3] = {0x30, 0x00, 0x01};
-		uint8_t sw_clear[3] = {0x28, 0x00, 0x01};
+		uint8_t REF_DATA[3] = {0x38, 0x00, 0x05};
+		uint8_t PWR[3] = {0x20, 0x00, 0x3F};
+		uint8_t config[3] = {0x30, 0x00, 0x0F};
+		uint8_t sw_clear[3] = {0x28, 0x00, 0x00};
+		uint8_t sw_reset[3] = {0x28, 0x00, 0x01};
 //		i2c_status_t status;
 		mss_i2c_status_t status;
 //		function_t* imu_ptr = (function_t*) device ;
@@ -476,14 +477,16 @@ void demo(void){
 //
 //		I2C_init(&g_core_i2c4, COREI2C_4_0, ADC_ADDR, I2C_PCLK_DIV_256); //ADC Initialisation
 
-		function_t* vc_ptr = (function_t*) device ;
-		vc_sensor_t* vc_dev;
-//		static vc_sensor_t vc_struct = {VC1, &g_core_i2c2, COREI2C_2_0, I2C_PCLK_DIV_256, {0,0}, {0,0}, {0,0}};
+//		function_t* vc_ptr = (function_t*) device ;
+//		vc_sensor_t* vc_dev;
+//		static vc_sensor_t vc_struct = {VC1, &g_core_i2c3, COREI2C_3_0, I2C_PCLK_DIV_256, {0,0}, {0,0}, {0,0}};
 //		vc_dev = &vc_struct;
 //		vc_ptr->init = &init;
 //		vc_ptr->init(vc_sensor, (void* )vc_dev);
 
-		MSS_I2C_init(&g_mss_i2c0, DAC_ADDR, I2C_PCLK_DIV_256);
+		I2C_init(&g_core_i2c3, COREI2C_3_0, DAC_ADDR, I2C_PCLK_DIV_256);
+
+//		MSS_I2C_init(&g_mss_i2c0, DAC_ADDR, I2C_PCLK_DIV_256);
 
 //		Data_HK_Queue = xQueueCreate(HK_QUEUE_LENGTH, SIZE_QUEUE);
 //		Data_PLD_Queue = xQueueCreate(PLD_QUEUE_LENGTH, SIZE_PLD_QUEUE);
@@ -492,17 +495,17 @@ void demo(void){
 //		NVIC_SetPriority(UART0_IRQn, configMAX_SYSCALL_INTERRUPT_PRIORITY - 1);
 		uint16_t i;
 
-		MSS_I2C_write(VC_SENSOR_I2C, DAC_ADDR, sw_clear, 3, I2C_RELEASE_BUS);
-		status = MSS_I2C_wait_complete(VC_SENSOR_I2C, I2C_NO_TIMEOUT);
-
-		MSS_I2C_write(VC_SENSOR_I2C, DAC_ADDR, PWR, 3, I2C_RELEASE_BUS);
-		status = MSS_I2C_wait_complete(VC_SENSOR_I2C, I2C_NO_TIMEOUT);
-
-		MSS_I2C_write(VC_SENSOR_I2C, DAC_ADDR, REF_DATA, 2, I2C_RELEASE_BUS);
-		status = MSS_I2C_wait_complete(VC_SENSOR_I2C, I2C_NO_TIMEOUT);
-
-		MSS_I2C_write(VC_SENSOR_I2C, DAC_ADDR, config, 3, I2C_RELEASE_BUS);
-		status = MSS_I2C_wait_complete(VC_SENSOR_I2C, I2C_NO_TIMEOUT);
+//		MSS_I2C_write(VC_SENSOR_I2C, DAC_ADDR, sw_clear, 3, I2C_RELEASE_BUS);
+//		status = MSS_I2C_wait_complete(VC_SENSOR_I2C, I2C_NO_TIMEOUT);
+//
+//		MSS_I2C_write(VC_SENSOR_I2C, DAC_ADDR, PWR, 3, I2C_RELEASE_BUS);
+//		status = MSS_I2C_wait_complete(VC_SENSOR_I2C, I2C_NO_TIMEOUT);
+//
+//		MSS_I2C_write(VC_SENSOR_I2C, DAC_ADDR, REF_DATA, 2, I2C_RELEASE_BUS);
+//		status = MSS_I2C_wait_complete(VC_SENSOR_I2C, I2C_NO_TIMEOUT);
+//
+//		MSS_I2C_write(VC_SENSOR_I2C, DAC_ADDR, config, 3, I2C_RELEASE_BUS);
+//		status = MSS_I2C_wait_complete(VC_SENSOR_I2C, I2C_NO_TIMEOUT);
 
 //		pkt_timer[0] = xTimerCreate("Hk_Timer", pdMS_TO_TICKS(2000), pdTRUE, (void* )0, vhk_callback);
 //		xTimerStart(pkt_timer[0], 0);
@@ -517,8 +520,22 @@ void demo(void){
 
 //		pkt_timer[1] = xTimerCreate("PLD_Timer", pdMS_TO_TICKS(3000), pdTRUE, (void*)0, vpld_callback);
 //		xTimerStart(pkt_timer[1],0);
+
+		I2C_write(VC_SENSOR_I2C, DAC_ADDR, sw_clear, 3, I2C_RELEASE_BUS);
+		status = I2C_wait_complete(VC_SENSOR_I2C, I2C_NO_TIMEOUT);
+
+		I2C_write(VC_SENSOR_I2C, DAC_ADDR, sw_reset, 3, I2C_RELEASE_BUS);
+		status = I2C_wait_complete(VC_SENSOR_I2C, I2C_NO_TIMEOUT);
+
+		I2C_write(VC_SENSOR_I2C, DAC_ADDR, REF_DATA, 3, I2C_RELEASE_BUS);
+		status = I2C_wait_complete(VC_SENSOR_I2C, I2C_NO_TIMEOUT);
+
 //		I2C_write(VC_SENSOR_I2C, DAC_ADDR, PWR, 3, I2C_RELEASE_BUS);
 //		status = I2C_wait_complete(VC_SENSOR_I2C,I2C_NO_TIMEOUT);
+//
+//		I2C_write(VC_SENSOR_I2C, DAC_ADDR, config, 3, I2C_RELEASE_BUS);
+//		status = I2C_wait_complete(VC_SENSOR_I2C,I2C_NO_TIMEOUT);
+
 	//
 //		I2C_write(VC_SENSOR_I2C, DAC_ADDR, REF, 3, I2C_RELEASE_BUS);
 //		status = I2C_wait_complete(VC_SENSOR_I2C, I2C_NO_TIMEOUT);
@@ -532,11 +549,38 @@ void demo(void){
 //		MSS_UART_init(&g_mss_uart0, 9600, MSS_UART_DATA_8_BITS | MSS_UART_NO_PARITY | MSS_UART_ONE_STOP_BIT);
 //		MSS_UART_set_rx_handler(&g_mss_uart0, uart0_rx_handler, MSS_UART_ONE_STOP_BIT);
 
-		uint8_t DAC_A_cmd[3] = {0x04, 0xAA, 0xF0};
+		uint8_t DAC_rdb[3] = {0x18, 0x11, 0x00};
+		uint8_t DAC_A_cmd_clall[3] = {0x10, 0xFF, 0xF0};
+		uint8_t Code_rdb[1] = {0x00};
+		uint8_t Load_rdb[1] = {0x08};
+		uint8_t DAC_A_cmd_cln[3] = {0x18, 0xEE, 0xE0};
+		uint8_t rdb_buf[3];
+		uint8_t j;
 
 		while(1){
-			MSS_I2C_write(VC_SENSOR_I2C, DAC_ADDR, DAC_A_cmd, 3, I2C_RELEASE_BUS);
-			status = MSS_I2C_wait_complete(VC_SENSOR_I2C, I2C_NO_TIMEOUT);
+			I2C_write(VC_SENSOR_I2C, DAC_ADDR, DAC_A_cmd_clall, 3, I2C_RELEASE_BUS);
+			status = I2C_wait_complete(VC_SENSOR_I2C, I2C_NO_TIMEOUT);
+
+			I2C_write(VC_SENSOR_I2C, DAC_ADDR, Code_rdb, 1, I2C_RELEASE_BUS);
+			status = I2C_wait_complete(VC_SENSOR_I2C, I2C_NO_TIMEOUT);
+
+			I2C_read(VC_SENSOR_I2C, DAC_ADDR, rdb_buf, 2, I2C_RELEASE_BUS);
+			status = I2C_wait_complete(VC_SENSOR_I2C, I2C_NO_TIMEOUT);
+
+			I2C_write(VC_SENSOR_I2C, DAC_ADDR, Load_rdb, 1, I2C_RELEASE_BUS);
+			status = I2C_wait_complete(VC_SENSOR_I2C, I2C_NO_TIMEOUT);
+
+			I2C_read(VC_SENSOR_I2C, DAC_ADDR, rdb_buf, 2, I2C_RELEASE_BUS);
+			status = I2C_wait_complete(VC_SENSOR_I2C, I2C_NO_TIMEOUT);
+
+
+//			for(j=0;j<50;j++){
+//
+//			}
+//			I2C_write(VC_SENSOR_I2C, DAC_ADDR, DAC_rdb, 3, I2C_RELEASE_BUS);
+//			status = I2C_wait_complete(VC_SENSOR_I2C, I2C_NO_TIMEOUT);
+//			I2C_read(VC_SENSOR_I2C, DAC_ADDR, rdb_buf, 3, I2C_RELEASE_BUS);
+//			status = I2C_wait_complete(VC_SENSOR_I2C, I2C_NO_TIMEOUT);
 
 		}
 //		I2C_init(&g_core_i2c5, COREI2C_5_0, DUMMY_I2C_ADDR, I2C_PCLK_DIV_256);

@@ -87,10 +87,13 @@
 #include "FreeRTOS.h"
 #include "task.h"
 #include "Demo/demo.h"
+#include "drivers/CoreGPIO/core_gpio.h"
+#include "drivers/mss_gpio/mss_gpio.h"
 /* Standard demo includes - just needed for the LED (ParTest) initialisation
 function. */
 
-
+#define CORE_GPIO_0 0x30000000
+#define CORE_GPIO_1 0x30000000
 /*
  * Set up the hardware ready to run this demo.
  */
@@ -114,6 +117,7 @@ void vApplicationTickHook( void );
 /* See the documentation page for this demo on the FreeRTOS.org web site for
 full information - including hardware setup requirements. */
 
+
 int main( void )
 {
 	/* Prepare the hardware to run this demo. */
@@ -124,14 +128,54 @@ int main( void )
 	of this file. */
 //	vTraceEnable(TRC_START);
 
+//	MSS_GPIO_init();
+//	MSS_GPIO_config(MSS_GPIO_0, MSS_GPIO_OUTPUT_MODE);
+	uint8_t i;
+//	while(1){
+//		MSS_GPIO_set_output(MSS_GPIO_0, 1);
+//		for(i = 0; i<250; i++){
+//
+//		}
+//		MSS_GPIO_set_output(MSS_GPIO_0, 0);
+//	}
+	gpio_instance_t g_gpio0;
+	gpio_instance_t g_gpio1;
+	uint32_t data;
+
+//	GPIO_init(&g_gpio0, CORE_GPIO_0, GPIO_APB_32_BITS_BUS);
+//	GPIO_config(&g_gpio0, GPIO_0, GPIO_OUTPUT_MODE);
+//	GPIO_init(&g_gpio1, CORE_GPIO_1, GPIO_APB_32_BITS_BUS);
+//	GPIO_config(&g_gpio1, GPIO_1, GPIO_INPUT_MODE);
+//	while(1){
+////		GPIO_set_output(&g_gpio0, GPIO_0, 1);
+////		for(i = 0; i<250; i++){
+////
+////		}
+////		GPIO_set_output(&g_gpio0, GPIO_0, 0);
+////		for(i = 0; i<250; i++){
+////
+////		}
+//	GPIO_set_outputs( &g_gpio0, GPIO_0_MASK | GPIO_2_MASK );
+//	for(i = 0; i<250; i++){
+//
+//	}
+//	data = GPIO_get_inputs(&g_gpio1);
+//	GPIO_set_outputs( &g_gpio0, GPIO_1_MASK | GPIO_2_MASK );
+//	for(i = 0; i<120; i++){
+//
+//	}
+//
+//	}
+
+
 	#if configCREATE_SIMPLE_BLINKY_DEMO_ONLY == 1
 	{
 		//main_blinky();
 
 
-//		demo();
+		demo();
 
-		demo_tasks();
+//		demo_tasks();
 
 
 	}
